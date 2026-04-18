@@ -1,7 +1,7 @@
 # 🎮 Stalcraft Clan Analytics
 
-[![Discord](https://img.shields.io/badge/Discord-Поддержка-5865F2?logo=discord)](https://discord.gg/uS4sbeYdyp)
-[![License](https://img.shields.io/badge/License-Proprietary-red)](./index.md)
+[![Discord](https://img.shields.io/badge/Discord-Поддержка-5865F2?logo=discord&style=flat-square)](https://discord.gg/uS4sbeYdyp)
+[![Email](https://img.shields.io/badge/Email-StalcraftCWASupport@protonmail.com-blue?style=flat-square)](mailto:StalcraftCWASupport@protonmail.com)
 
 **SCA** — Discord-бот для автоматического анализа статистики клановых войн (CW) в игре Stalcraft.
 
@@ -16,9 +16,9 @@
 
 ## 📖 Документация
 
-- [📘 Руководство пользователя](./GUIDE.md)
-- [📜 Пользовательское соглашение](./index.md)
-- [🔒 Политика конфиденциальности](./privacy.md)
+- [📘 Руководство пользователя](GUIDE.md)
+- [📜 Пользовательское соглашение](https://sahabush.github.io/Stalcraft-Clan-Analytics/)
+- [🔒 Политика конфиденциальности](https://sahabush.github.io/Stalcraft-Clan-Analytics/privacy)
 
 ## 🚀 Быстрый старт
 
@@ -31,7 +31,7 @@
 ## 📞 Поддержка
 
 - **Discord:** [https://discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
-- **Email:** StalcraftCWASupport@protonmail.com
+- **Email:** [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
 
 ---
 
