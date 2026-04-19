@@ -3,6 +3,11 @@
 [![Discord](https://img.shields.io/badge/Discord-Поддержка-5865F2?logo=discord&style=flat-square)](https://discord.gg/uS4sbeYdyp)
 [![Email](https://img.shields.io/badge/Email-StalcraftCWASupport@protonmail.com-blue?style=flat-square)](mailto:StalcraftCWASupport@protonmail.com)
 
+> ⚠️ **Внимание!** Сервис находится на стадии **бета-тестирования**.  
+> Некоторые функции могут работать некорректно, иметь ограничения или временно отключаться.  
+> Мы активно работаем над улучшением стабильности и точности распознавания.  
+> Если вы обнаружили ошибку — пожалуйста, сообщите нам через [Discord](https://discord.gg/uS4sbeYdyp)!
+
 **SCA** — Discord-бот для автоматического анализа статистики клановых войн (CW) в игре Stalcraft.
 
 ## ✨ Возможности
@@ -16,7 +21,7 @@
 
 ## 📖 Документация
 
-- [📘 Руководство пользователя](GUIDE.md)
+- [📘 Руководство пользователя](https://sahabush.github.io/Stalcraft-Clan-Analytics/GUIDE)
 - [📜 Пользовательское соглашение](https://sahabush.github.io/Stalcraft-Clan-Analytics/)
 - [🔒 Политика конфиденциальности](https://sahabush.github.io/Stalcraft-Clan-Analytics/privacy)
 
