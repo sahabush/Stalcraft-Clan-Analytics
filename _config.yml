@@ -1,4 +1,4 @@
-theme: jekyll-theme-midnight
+remote_theme: just-the-docs/just-the-docs
 title: Stalcraft Clan Analytics
-description: Правовая информация
-show_downloads: false
+description: Аналитика клановых войн Stalcraft
+color_scheme: dark
