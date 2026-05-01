@@ -3,6 +3,7 @@
 [![Discord](https://img.shields.io/badge/Discord-Поддержка-5865F2?logo=discord&style=flat-square)](https://discord.gg/uS4sbeYdyp)
 [![Email](https://img.shields.io/badge/Email-StalcraftCWASupport@protonmail.com-blue?style=flat-square)](mailto:StalcraftCWASupport@protonmail.com)
 
+###  ⚠️ **Внимание!** Содержимое README не актуально, спасибо за внимание
 > ⚠️ **Внимание!** Сервис находится на стадии **бета-тестирования**.  
 > Некоторые функции могут работать некорректно, иметь ограничения или временно отключаться.  
 > Мы активно работаем над улучшением стабильности и точности распознавания.  
