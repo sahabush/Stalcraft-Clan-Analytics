@@ -18,10 +18,11 @@ description: Условия использования сервиса SCA (SCWA)
 1.1. Настоящее Пользовательское соглашение (далее — «Соглашение») регулирует отношения между Администрацией сервиса **SCA (SCWA)** (далее — «Сервис», «Мы», «Администрация») и физическим лицом (далее — «Пользователь», «Вы»), использующим Сервис.
 
 1.2. **Контактная информация:**
-- Электронная почта: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
-- Discord-сервер поддержки: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
+- Тикет-система: [scwa.ru/support](https://scwa.ru/support)
+- Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
-1.3. Сервис представляет собой Discord-бота **SCWA** и сопутствующую инфраструктуру (API-сервер, база данных, OCR-воркер), предназначенную для автоматического анализа статистики клановых войн (CW) в многопользовательской онлайн-игре Stalcraft на основе загружаемых Пользователем скриншотов.
+1.3. Сервис представляет собой Discord-бота **SCWA** и веб-интерфейс, доступный по адресу [scwa.ru](https://scwa.ru).
 
 1.4. **Сервис не является официальным продуктом EXBO, Stalcraft или Discord.** Все права на игру Stalcraft и связанные с ней товарные знаки принадлежат их законным правообладателям.
 
@@ -32,7 +33,7 @@ description: Условия использования сервиса SCA (SCWA)
 
 ## 2. Термины и определения
 
-2.1. **Сервис (SCA/SCWA)** — программный комплекс, доступный по адресу [bot.scwa.ru](https://bot.scwa.ru), включающий Discord-бота, API-сервер, базу данных и OCR-воркер.
+2.1. **Сервис (SCA/SCWA)** представляет собой Discord-бота **SCWA** и веб-интерфейс, доступный по адресу [scwa.ru](https://scwa.ru).
 
 2.2. **Пользователь** — физическое лицо, достигшее 14 лет, использующее Сервис.
 
@@ -215,8 +216,9 @@ description: Условия использования сервиса SCA (SCWA)
 
 ---
 
-**Контакты:**
-- Discord: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
+**Контактная информация:**
+- Тикет-система: [scwa.ru/support](https://scwa.ru/support)
 - Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 © SCA (SCWA), 2026

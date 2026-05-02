@@ -16,9 +16,10 @@ description: Как мы обрабатываем ваши данные
 
 1.1. Настоящая Политика конфиденциальности описывает, как Сервис **SCA (SCWA)** собирает, использует, хранит и защищает информацию Пользователей.
 
-1.2. **Контакты:**
+1.2. **Контактная информация:**
+- Тикет-система: [scwa.ru/support](https://scwa.ru/support)
 - Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
-- Discord: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
+- Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 1.3. Используя Сервис, Вы соглашаетесь с условиями настоящей Политики.
 
@@ -174,9 +175,9 @@ description: Как мы обрабатываем ваши данные
 10.2. О существенных изменениях уведомим через системные уведомления или Discord-сервер.
 
 ---
-
-**Контакты:**
-- Discord: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
+**Контактная информация:**
+- Тикет-система: [scwa.ru/support](https://scwa.ru/support)
 - Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 © SCA (SCWA), 2026

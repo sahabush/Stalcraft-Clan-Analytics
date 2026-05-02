@@ -278,12 +278,13 @@ description: Инструкция по использованию SCA (SCWA)
 
 ---
 
-## Поддержка
+## 📞 Поддержка
 
 | Канал | Адрес |
 |:---|:---|
-| Discord | [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp) |
+| Тикет-система | [scwa.ru/support](https://scwa.ru/support) |
 | Email | [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com) |
+| Сервер сообщества | [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp) |
 
 Время ответа — обычно до 24 часов.
 

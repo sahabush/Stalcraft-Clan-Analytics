@@ -10,7 +10,7 @@ description: Договор на оказание услуг SCA (SCWA)
 
 ## 1. Термины и определения
 
-1.1. **SCA** (Stalcraft Clan Analytics), также именуемый **SCWA** (Stalcraft Clan Wars Analytics) — программный комплекс, состоящий из Discord-бота `SCWA#...`, API-сервера, базы данных и OCR-воркера, доступный по адресу [bot.scwa.ru](https://bot.scwa.ru).
+1.1. **SCA** (Stalcraft Clan Analytics), также именуемый **SCWA** (Stalcraft Clan Wars Analytics) представляет собой Discord-бота **SCWA** и веб-интерфейс, доступный по адресу [scwa.ru](https://scwa.ru).
 
 1.2. **Исполнитель** — Администрация Сервиса SCA (SCWA).
 
@@ -71,7 +71,7 @@ description: Договор на оказание услуг SCA (SCWA)
 
 6.1. Возврат средств производится в случаях, прямо указанных в [Пользовательском соглашении](https://docs.scwa.ru/) (раздел 7).
 
-6.2. Для запроса возврата необходимо обратиться в службу поддержки через Discord-сервер или электронную почту.
+6.2. Для запроса возврата необходимо обратиться в службу поддержки через  через тикет-систему на scwa.ru/support или по электронной почте.
 
 6.3. Срок рассмотрения запроса на возврат — до 7 рабочих дней.
 
@@ -85,8 +85,9 @@ description: Договор на оказание услуг SCA (SCWA)
 
 ---
 
-**Контакты:**
-- Discord: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
+**Контактная информация:**
+- Тикет-система: [scwa.ru/support](https://scwa.ru/support)
 - Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 © SCA (SCWA), 2026
