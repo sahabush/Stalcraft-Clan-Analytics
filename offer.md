@@ -86,12 +86,8 @@ description: Договор на оказание услуг SCA (SCWA)
 ---
 
 **Контактная информация:**
-Реквизиты
-
-Самозанятый: Останин Илья Алексеевич
-ИНН: 231522152178
-
-
+- Самозанятый: Останин Илья Алексеевич
+- ИНН: 231522152178
 - Тикет-система: [scwa.ru/support](https://scwa.ru/support)
 - Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
 - Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
