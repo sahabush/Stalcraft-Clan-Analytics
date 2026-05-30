@@ -65,8 +65,7 @@ description: Информация о проекте SCA (SCWA)
 - Улучшение алгоритмов OCR на основе накопленных данных
 
 **Среднесрочные планы:**
-- Тактическая карта для планирования CW
-- Уведомления о новых скриншотах
+- Сканер гранат
 - Мобильная версия веб-интерфейса
 
 **Долгосрочные планы:**
@@ -96,7 +95,7 @@ description: Информация о проекте SCA (SCWA)
 | Канал | Адрес |
 |:---|:---|
 | Тикет-система | [scwa.ru/support](https://scwa.ru/support) |
-| Email | [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com) |
+| Email | [support@scwa.ru](mailto:support@scwa.ru) |
 | Сервер сообщества | [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp) |
 
 Время ответа — обычно до 24 часов.

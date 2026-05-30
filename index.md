@@ -9,7 +9,7 @@ description: Условия использования сервиса SCA (SCWA)
 > **SCA** (Stalcraft Clan Analytics) и **SCWA** (Stalcraft Clan Wars Analytics) — одно и то же.
 > В документах используется аббревиатура SCA, бот и домен используют SCWA.
 
-**Дата последнего обновления: 19 мая 2026 года**
+**Дата последнего обновления: 30 мая 2026 года**
 
 ---
 
@@ -19,7 +19,7 @@ description: Условия использования сервиса SCA (SCWA)
 
 1.2. **Контактная информация:**
 - Тикет-система: [scwa.ru/support](https://scwa.ru/support)
-- Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Email: [support@scwa.ru](mailto:support@scwa.ru)
 - Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 1.3. Сервис представляет собой Discord-бота **SCWA** и веб-интерфейс, доступный по адресу [scwa.ru](https://scwa.ru).
@@ -78,7 +78,7 @@ description: Условия использования сервиса SCA (SCWA)
 - Метаданные скриншотов (дата, уверенность распознавания);
 - Информацию о блокировках.
 
-4.4. **Срок хранения:** статистика CW — 30 дней. По истечении данные автоматически удаляются.
+4.4. **Срок хранения:** статистика CW — 90 дней. По истечении данные автоматически удаляются.
 
 4.5. Пользователь вправе запросить удаление всех своих данных через службу поддержки. Срок выполнения — до 7 рабочих дней.
 
@@ -218,7 +218,7 @@ description: Условия использования сервиса SCA (SCWA)
 
 **Контактная информация:**
 - Тикет-система: [scwa.ru/support](https://scwa.ru/support)
-- Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Email: [support@scwa.ru](mailto:support@scwa.ru)
 - Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 © SCA (SCWA), 2026

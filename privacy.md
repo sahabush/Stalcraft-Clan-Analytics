@@ -8,7 +8,7 @@ description: Как мы обрабатываем ваши данные
 
 > **SCA** (Stalcraft Clan Analytics) и **SCWA** (Stalcraft Clan Wars Analytics) — одно и то же.
 
-**Дата последнего обновления: 19 мая 2026 года**
+**Дата последнего обновления: 30 мая 2026 года**
 
 ---
 
@@ -18,7 +18,7 @@ description: Как мы обрабатываем ваши данные
 
 1.2. **Контактная информация:**
 - Тикет-система: [scwa.ru/support](https://scwa.ru/support)
-- Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Email: [support@scwa.ru](mailto:support@scwa.ru)
 - Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 1.3. Используя Сервис, Вы соглашаетесь с условиями настоящей Политики.
@@ -103,7 +103,7 @@ description: Как мы обрабатываем ваши данные
 
 | Тип данных | Срок хранения | Способ удаления |
 |:---|:---|:---|
-| Статистика CW | 30 дней | Автоматически |
+| Статистика CW | 90 дней | Автоматически |
 | Скриншоты | До обработки (секунды) | Автоматически |
 | Список участников клана | До смены состава | Через API Stalcraft |
 | OAuth токены | До отзыва или истечения | Шифрованно в БД |
@@ -137,7 +137,7 @@ description: Как мы обрабатываем ваши данные
 ## 7. Защита данных
 
 7.1. Применяемые меры:
-- Шифрование OAuth токенов (AES-256);
+- Шифрование OAuth токенов;
 - HTTPS для всех соединений;
 - Параметризованные SQL-запросы;
 - API-ключ для внутренних эндпоинтов;
@@ -177,7 +177,7 @@ description: Как мы обрабатываем ваши данные
 ---
 **Контактная информация:**
 - Тикет-система: [scwa.ru/support](https://scwa.ru/support)
-- Email: [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Email: [support@scwa.ru](mailto:support@scwa.ru)
 - Сервер сообщества: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 © SCA (SCWA), 2026
