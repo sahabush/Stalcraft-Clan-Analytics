@@ -39,6 +39,13 @@
   }
   ::selection{background:rgba(210,131,46,.32);color:#fff}
 
+  /* slim themed scrollbars everywhere (no chunky native bars) */
+  *::-webkit-scrollbar{width:8px;height:8px}
+  *::-webkit-scrollbar-track{background:transparent}
+  *::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  *::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
+  html{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
 
   /* ---- top status strip ---- */
@@ -129,8 +136,7 @@
   .caption .stress{color:var(--ink)}
 
   /* ---- proof drawers ---- */
-  .proof{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0 4px}
-  @media(max-width:680px){.proof{grid-template-columns:1fr}}
+  .proof{display:grid;grid-template-columns:1fr;gap:14px;margin:30px 0 4px}
   details.drawer{
     background:var(--panel);border:1px solid var(--line-soft);border-radius:4px;overflow:hidden;
   }
@@ -158,9 +164,11 @@
     font-family:"JetBrains Mono",monospace;letter-spacing:.04em}
   pre.slepok{
     margin:14px 0 0;padding:14px;background:#0C0E08;border:1px solid var(--line-soft);border-radius:3px;
-    overflow:auto;font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.5;
+    overflow:auto;font-family:"JetBrains Mono",monospace;font-size:clamp(10px,2.4vw,11.5px);line-height:1.5;
     color:#CFCBB6;letter-spacing:0;
+    scrollbar-width:none;-ms-overflow-style:none;
   }
+  pre.slepok::-webkit-scrollbar{display:none}
   pre.slepok .lead{color:var(--rust-bright)}
 
   /* ---- prose sections ---- */
@@ -224,19 +232,22 @@
     .dot,.eyebrow .cursor{animation:none}
   }
 
-  /* ---- lightbox (messenger-style fullscreen) ---- */
+  /* ---- lightbox (fullscreen + zoom slider) ---- */
   img.zoomable{cursor:zoom-in;transition:filter .15s ease}
   img.zoomable:hover{filter:brightness(1.06)}
   .lightbox{
-    position:fixed;inset:0;z-index:60;display:none;
+    position:fixed;inset:0;z-index:60;display:none;overflow:hidden;
     align-items:center;justify-content:center;padding:24px;
     background:rgba(8,9,5,.93);backdrop-filter:blur(4px);
   }
   .lightbox.open{display:flex}
   .lightbox img{
-    max-width:96vw;max-height:92vh;width:auto;height:auto;border-radius:4px;
-    border:1px solid var(--line);box-shadow:0 30px 90px -20px rgba(0,0,0,.95);cursor:zoom-out;
+    max-width:94vw;max-height:84vh;width:auto;height:auto;border-radius:4px;
+    border:1px solid var(--line);box-shadow:0 30px 90px -20px rgba(0,0,0,.95);
+    transform:translate(0,0) scale(1);transform-origin:center center;
+    cursor:grab;touch-action:none;user-select:none;-webkit-user-drag:none;will-change:transform;
   }
+  .lightbox img.dragging{cursor:grabbing}
   .lightbox .close{
     position:absolute;top:16px;right:18px;width:42px;height:42px;cursor:pointer;
     border:1px solid var(--line);background:rgba(29,32,22,.85);color:var(--ink);border-radius:6px;
@@ -244,10 +255,37 @@
     display:flex;align-items:center;justify-content:center;transition:.13s ease;
   }
   .lightbox .close:hover{border-color:var(--rust);color:var(--rust-bright)}
-  .lightbox .hintbar{
-    position:absolute;bottom:18px;left:0;right:0;text-align:center;
-    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);
+  /* zoom control bar */
+  .lb-controls{
+    position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:11px;padding:9px 14px;
+    background:rgba(23,26,17,.94);border:1px solid var(--line);border-radius:10px;
+    backdrop-filter:blur(6px);box-shadow:0 14px 40px -16px rgba(0,0,0,.85);
   }
+  .lb-controls button{
+    width:30px;height:30px;flex:none;cursor:pointer;border-radius:6px;
+    border:1px solid var(--line-soft);background:var(--panel);color:var(--ink);
+    font-family:"JetBrains Mono",monospace;font-size:17px;line-height:1;
+    display:flex;align-items:center;justify-content:center;transition:.12s ease;
+  }
+  .lb-controls button:hover{border-color:var(--rust);color:var(--rust-bright)}
+  .lb-controls input[type=range]{
+    -webkit-appearance:none;appearance:none;width:190px;height:4px;border-radius:4px;
+    background:var(--line);outline:none;cursor:pointer;
+  }
+  .lb-controls input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;
+    background:var(--rust);border:2px solid #15150C;cursor:pointer;transition:.12s ease;
+  }
+  .lb-controls input[type=range]::-webkit-slider-thumb:hover{background:var(--rust-bright)}
+  .lb-controls input[type=range]::-moz-range-thumb{
+    width:16px;height:16px;border:2px solid #15150C;border-radius:50%;background:var(--rust);cursor:pointer;
+  }
+  .lb-controls .pct{
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.05em;color:var(--ink-dim);
+    min-width:44px;text-align:right;
+  }
+  @media(max-width:560px){.lb-controls input[type=range]{width:120px}}
 </style>
 </head>
 <body>
@@ -404,6 +442,10 @@
         <p class="thanks">Спасибо, что читаете и пользуетесь SCWA. Любой фидбек — баги, идеи, критика — делает инструмент лучше. Увидимся на КВ&nbsp;🤝</p>
       </div>
     </section>
+
+    <p style="margin:34px 0 6px;text-align:center;font-size:12.5px;line-height:1.6;color:var(--ink-faint);font-style:italic">
+      P.S. Хотите такое же оформление и на основном сайте? Возможно, обновим его вместе с выходом новой версии OCR — если наберётся достаточно желающих.
+    </p>
   </div>
 
   <footer class="foot">
@@ -416,30 +458,73 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр изображения">
     <button class="close" id="lbClose" type="button" aria-label="Закрыть">✕</button>
     <img id="lbImg" src="" alt="">
-    <div class="hintbar">клик вне изображения или Esc — закрыть</div>
+    <div class="lb-controls" role="group" aria-label="Масштаб изображения">
+      <button id="lbMinus" type="button" aria-label="Уменьшить">−</button>
+      <input id="lbRange" type="range" min="100" max="400" value="100" step="5" aria-label="Размер изображения">
+      <button id="lbPlus" type="button" aria-label="Увеличить">+</button>
+      <span class="pct" id="lbPct">100%</span>
+    </div>
   </div>
 
   <script>
   (function(){
     var lb=document.getElementById('lightbox'),
         img=document.getElementById('lbImg'),
-        closeBtn=document.getElementById('lbClose');
+        closeBtn=document.getElementById('lbClose'),
+        range=document.getElementById('lbRange'),
+        minus=document.getElementById('lbMinus'),
+        plus=document.getElementById('lbPlus'),
+        pct=document.getElementById('lbPct');
+    var scale=1, tx=0, ty=0, drag=null;
+
+    function apply(){
+      img.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+      pct.textContent=Math.round(scale*100)+'%';
+    }
+    function setScale(s){
+      scale=Math.min(4,Math.max(1,Math.round(s*100)/100));
+      if(scale===1){tx=0;ty=0;}
+      range.value=Math.round(scale*100);
+      apply();
+    }
     function open(src,alt){
       img.setAttribute('src',src);img.setAttribute('alt',alt||'');
+      scale=1;tx=0;ty=0;range.value=100;apply();
       lb.classList.add('open');document.body.style.overflow='hidden';
     }
     function close(){
       lb.classList.remove('open');img.setAttribute('src','');document.body.style.overflow='';
     }
+
     document.querySelectorAll('img.zoomable').forEach(function(el){
       el.addEventListener('click',function(){open(el.getAttribute('src'),el.getAttribute('alt'));});
     });
     closeBtn.addEventListener('click',close);
-    img.addEventListener('click',close);
     lb.addEventListener('click',function(e){if(e.target===lb)close();});
     document.addEventListener('keydown',function(e){
       if(e.key==='Escape'&&lb.classList.contains('open'))close();
     });
+
+    /* ползунок и кнопки масштаба */
+    range.addEventListener('input',function(){setScale(parseInt(range.value,10)/100);});
+    minus.addEventListener('click',function(){setScale(scale-0.25);});
+    plus.addEventListener('click',function(){setScale(scale+0.25);});
+    img.addEventListener('dblclick',function(){setScale(scale>1?1:2);});
+
+    /* перетаскивание увеличенной картинки */
+    img.addEventListener('pointerdown',function(e){
+      if(scale<=1)return;
+      drag={x:e.clientX,y:e.clientY,tx:tx,ty:ty};
+      img.classList.add('dragging');
+      try{img.setPointerCapture(e.pointerId);}catch(_){}
+    });
+    img.addEventListener('pointermove',function(e){
+      if(!drag)return;
+      tx=drag.tx+(e.clientX-drag.x);ty=drag.ty+(e.clientY-drag.y);apply();
+    });
+    function endDrag(){drag=null;img.classList.remove('dragging');}
+    img.addEventListener('pointerup',endDrag);
+    img.addEventListener('pointercancel',endDrag);
   })();
   </script>
 
