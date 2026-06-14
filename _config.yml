@@ -1,4 +1,6 @@
-remote_theme: just-the-docs/just-the-docs
 title: Stalcraft Clan Analytics
 description: Аналитика клановых войн Stalcraft
-color_scheme: dark
+
+# Тема Just the Docs отключена — внешний вид полностью задаётся в _layouts/default.html.
+# Имена файлов и пути не меняются, поэтому ссылки /privacy, /offer, /info, /GUIDE остаются прежними.
+# remote_theme: just-the-docs/just-the-docs   # убрано намеренно
