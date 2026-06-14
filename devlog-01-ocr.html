@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCWA · Devlog #1 — OCR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap&subset=cyrillic,latin" rel="stylesheet">
+<style>
+  :root{
+    --bg:#13150E;
+    --bg-2:#171A11;
+    --panel:#1D2016;
+    --panel-2:#23271A;
+    --line:#3A3F2D;
+    --line-soft:#2B3020;
+    --ink:#EAE6D8;
+    --ink-dim:#9C9882;
+    --ink-faint:#6E6B58;
+    --rust:#D2832E;      /* signature: the KV selected-row orange */
+    --rust-bright:#EE9A3C;
+    --geiger:#9FBA5A;    /* the "РАСПОЗНАТЬ" green, used only for success */
+    --maxw:920px;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #1C2015 0%, var(--bg) 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"Manrope",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(210,131,46,.32);color:#fff}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+  /* ---- top status strip ---- */
+  .statusbar{
+    border-bottom:1px solid var(--line-soft);
+    background:linear-gradient(180deg,rgba(35,39,26,.55),rgba(19,21,14,0));
+  }
+  .statusbar .wrap{
+    display:flex;align-items:center;gap:14px;
+    height:46px;
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--geiger);
+    box-shadow:0 0 0 0 rgba(159,186,90,.7);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(159,186,90,.55)}
+    70%{box-shadow:0 0 0 7px rgba(159,186,90,0)}
+    100%{box-shadow:0 0 0 0 rgba(159,186,90,0)}
+  }
+  .statusbar .sep{color:var(--ink-faint)}
+  .statusbar .right{margin-left:auto;color:var(--ink-faint)}
+
+  /* ---- hero ---- */
+  header.hero{padding:64px 0 30px}
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12.5px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--rust);display:flex;align-items:center;gap:12px;margin-bottom:22px;
+  }
+  .eyebrow .num{color:var(--ink);font-weight:700}
+  .eyebrow .cursor{
+    width:9px;height:16px;background:var(--rust);display:inline-block;translate:0 2px;
+    animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  h1{
+    font-family:"Oswald",sans-serif;font-weight:600;
+    font-size:clamp(34px,6.4vw,60px);line-height:1.02;letter-spacing:.005em;
+    margin:0 0 18px;text-wrap:balance;
+  }
+  h1 .hl{color:var(--rust-bright)}
+  .lede{font-size:clamp(17px,2.4vw,20px);color:var(--ink-dim);max-width:60ch;margin:0}
+
+  /* ---- demo readout (the signature) ---- */
+  .readout{margin:40px 0 8px}
+  .readout .frame{
+    position:relative;
+    background:#0C0E08;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:12px;
+    box-shadow:0 24px 60px -28px rgba(0,0,0,.9), inset 0 0 0 1px rgba(238,154,60,.05);
+  }
+  .readout .bar{
+    display:flex;align-items:center;gap:10px;
+    font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink-dim);
+    padding:4px 6px 12px;
+  }
+  .readout .bar b{color:var(--geiger);font-weight:500}
+  .readout .bar .who{margin-left:auto;color:var(--ink-faint)}
+  .readout img{display:block;width:100%;height:auto;border-radius:2px}
+  /* corner ticks */
+  .tick{position:absolute;width:14px;height:14px;border:2px solid var(--rust);opacity:.85}
+  .tick.tl{top:-1px;left:-1px;border-right:0;border-bottom:0}
+  .tick.tr{top:-1px;right:-1px;border-left:0;border-bottom:0}
+  .tick.bl{bottom:-1px;left:-1px;border-right:0;border-top:0}
+  .tick.br{bottom:-1px;right:-1px;border-left:0;border-top:0}
+
+  .caption{
+    color:var(--ink-dim);font-size:14.5px;line-height:1.55;
+    margin:16px 2px 0;padding-left:14px;border-left:2px solid var(--line);
+  }
+  .caption .stress{color:var(--ink)}
+
+  /* ---- proof drawers ---- */
+  .proof{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0 4px}
+  @media(max-width:680px){.proof{grid-template-columns:1fr}}
+  details.drawer{
+    background:var(--panel);border:1px solid var(--line-soft);border-radius:4px;overflow:hidden;
+  }
+  details.drawer[open]{border-color:var(--line)}
+  details.drawer summary{
+    list-style:none;cursor:pointer;
+    display:flex;align-items:center;gap:12px;
+    padding:14px 16px;
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink);user-select:none;
+    transition:background .15s ease;
+  }
+  details.drawer summary::-webkit-details-marker{display:none}
+  details.drawer summary:hover{background:var(--panel-2)}
+  details.drawer summary .sig{color:var(--ink-faint);font-size:11px}
+  details.drawer summary .pm{
+    margin-left:auto;color:var(--rust);font-weight:700;font-size:15px;width:14px;text-align:center;
+  }
+  details.drawer[open] summary .pm{color:var(--ink-dim)}
+  details.drawer[open] summary .pm::after{content:"–"}
+  details.drawer:not([open]) summary .pm::after{content:"+"}
+  .drawer .body{padding:0 16px 16px;border-top:1px solid var(--line-soft)}
+  .drawer .body img{display:block;width:100%;height:auto;border-radius:2px;margin-top:14px}
+  .drawer .body .hint{color:var(--ink-faint);font-size:12.5px;margin:10px 2px 0;
+    font-family:"JetBrains Mono",monospace;letter-spacing:.04em}
+  pre.slepok{
+    margin:14px 0 0;padding:14px;background:#0C0E08;border:1px solid var(--line-soft);border-radius:3px;
+    overflow:auto;font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.5;
+    color:#CFCBB6;letter-spacing:0;
+  }
+  pre.slepok .lead{color:var(--rust-bright)}
+
+  /* ---- prose sections ---- */
+  section.block{padding:42px 0;border-top:1px solid var(--line-soft)}
+  .kicker{
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--rust);margin:0 0 14px;
+  }
+  h2{font-family:"Oswald",sans-serif;font-weight:600;font-size:clamp(24px,4vw,33px);
+    line-height:1.1;margin:0 0 18px;letter-spacing:.01em}
+  p{margin:0 0 16px;color:var(--ink)}
+  p.muted{color:var(--ink-dim)}
+  .block ul{list-style:none;margin:6px 0 0;padding:0}
+  .block ul li{position:relative;padding:14px 0 14px 26px;border-top:1px solid var(--line-soft)}
+  .block ul li:first-child{border-top:0}
+  .block ul li::before{content:"";position:absolute;left:2px;top:21px;width:9px;height:9px;
+    background:var(--rust);clip-path:polygon(0 0,100% 50%,0 100%)}
+  .block ul li b{font-weight:700}
+  .block ul li span{display:block;color:var(--ink-dim);font-size:15px;margin-top:2px}
+
+  /* ---- before/after strip ---- */
+  .ba{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+  @media(max-width:680px){.ba{grid-template-columns:1fr}}
+  .ba .cell{background:var(--panel);border:1px solid var(--line-soft);border-radius:4px;padding:16px 16px 18px}
+  .ba .lab{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+  .ba .row{display:flex;align-items:baseline;gap:10px;font-family:"Oswald",sans-serif}
+  .ba .old{color:var(--ink-faint);font-size:20px;text-decoration:line-through;text-decoration-color:var(--line)}
+  .ba .arr{color:var(--rust)}
+  .ba .new{color:var(--ink);font-size:26px;font-weight:600}
+  .ba .new.green{color:var(--geiger)}
+
+  /* ---- support / footer ---- */
+  .support{
+    margin:8px 0 0;background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:6px;padding:30px 26px;
+  }
+  .support h2{margin-bottom:10px}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+  a.btn{
+    text-decoration:none;font-family:"Oswald",sans-serif;font-weight:600;font-size:16px;letter-spacing:.02em;
+    padding:12px 22px;border-radius:3px;display:inline-flex;align-items:center;gap:9px;transition:.15s ease;
+  }
+  a.btn.primary{background:var(--rust);color:#15150C}
+  a.btn.primary:hover{background:var(--rust-bright)}
+  a.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  a.btn.ghost:hover{border-color:var(--rust);color:var(--rust-bright)}
+  .thanks{color:var(--ink-dim);margin-top:22px;font-size:15px}
+
+  footer.foot{border-top:1px solid var(--line-soft);margin-top:44px;padding:26px 0 60px}
+  footer.foot .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.1em;color:var(--ink-faint)}
+  footer.foot a{color:var(--ink-dim);text-decoration:none}
+  footer.foot a:hover{color:var(--rust)}
+  footer.foot .right{margin-left:auto}
+
+  a:focus-visible,summary:focus-visible,.btn:focus-visible{
+    outline:2px solid var(--rust-bright);outline-offset:3px;border-radius:2px}
+
+  @media(prefers-reduced-motion:reduce){
+    .dot,.eyebrow .cursor{animation:none}
+  }
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <div class="wrap">
+      <span class="dot" aria-hidden="true"></span>
+      <span>SCWA</span><span class="sep">//</span><span>devlog</span>
+      <span class="right">обновления сервиса</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">
+        <span class="num">#01</span><span>OCR · распознавание</span>
+        <span class="cursor" aria-hidden="true"></span>
+      </div>
+      <h1>Движок, который читает даже то, что <span class="hl">читать невозможно</span></h1>
+      <p class="lede">Короткий рассказ о том, как меняется распознавание результатов КВ в SCWA — что уже работает в новой версии и почему вам станет проще.</p>
+    </header>
+
+    <p class="muted" style="margin-bottom:6px">
+      OCR — это сердце сервиса: вы загружаете скриншот итогов боя, а программа сама считывает с него таблицу.
+      Сейчас распознавание держится на старом движке — он работает, но придирчив к качеству скрина и тратит на обработку несколько секунд.
+      Мы готовим ему замену: собственную модель нового поколения, которая разбирает даже убитые скриншоты и делает это почти мгновенно.
+    </p>
+
+    <!-- ===== SIGNATURE: live readout ===== -->
+    <div class="readout">
+      <div class="frame">
+        <span class="tick tl"></span><span class="tick tr"></span>
+        <span class="tick bl"></span><span class="tick br"></span>
+        <div class="bar">
+          <span>readout</span><span class="sep" style="color:var(--ink-faint)">//</span><b>распознавание</b>
+          <span class="who">демо новой модели</span>
+        </div>
+        <img src="scwa_demo_hq.gif" alt="Демонстрация: искажённый скриншот КВ распознаётся в чистую таблицу за доли секунды">
+      </div>
+      <p class="caption">
+        На вход — <span class="stress">худший возможный скрин</span>: разрешение растянуто в 4:3, кадр снят с отката и сверху прогнан через Win+Shift+S.
+        На выходе — чистая таблица примерно за <span class="stress">0.4 секунды</span>. И это сырой вывод модели, без парсера и без правки никнеймов по списку из официального API.
+      </p>
+    </div>
+
+    <!-- ===== PROOF DRAWERS ===== -->
+    <div class="proof">
+      <details class="drawer">
+        <summary>Исходный скриншот <span class="sig">· вход</span><span class="pm" aria-hidden="true"></span></summary>
+        <div class="body">
+          <img src="original_kv.png" alt="Исходный искажённый скриншот результатов клановой войны">
+          <p class="hint">4:3-растяжение · откат · Win+Shift+S — то, что обычный OCR не вывозит.</p>
+        </div>
+      </details>
+
+      <details class="drawer">
+        <summary>Текстовый слепок <span class="sig">· выход</span><span class="pm" aria-hidden="true"></span></summary>
+        <div class="body">
+<pre class="slepok"><span class="lead"> 1</span> SlavaDoTeR        26  11  13  16705  8994  Офицер
+ 2 Nxxmelles         17   9  16  27630  7621  Офицер
+ 3 Фвнимор_Хлюпер    12  16   6  33162  7604  Офицер
+ 4 Uruma_six         16  16  13  45064  6315  Офицер
+ 5 ГлавБлох           8  15   9  15247  6110  Офицер
+ 6 Сашка_Машина      12  18   8  53560  6054  Офицер
+ 7 Anzzz             11  18   3  29220  5999  Офицер
+ 8 Roman_him         15  14   3  26316  5923  Офицер
+ 9 Xenelya           14  18   3  34130  5916  Офицер
+10 Kirby_            16  12   9  30160  5840  Офицер
+11 Kudniik           12  10   4  11928  5648  Полковник
+12 SBEY_MOPSIK       11  13   9  14984  5579  Офицер
+13 Тристан_Дырявый   15  13   7  15876  5492  Офицер
+14 Skywhy_walker     10  10   8   5904  5176  Офицер
+15 Iseym              9  13  14   7173  4990  Офицер
+16 Свой_Газик         6  23  10  66712  4939  Офицер
+17 MindReOn           9  13   8  16798  4798  Офицер
+18 Квасой            13  11  10  25418  4774  Офицер
+19 Klarkyshe         14  12  11  16723  4756  Офицер
+20 Nicolays          12  19   9  14744  4736  Офицер
+21 A_в_глаз          11  16   5  49908  4637  Полковник
+22 Denond            13  14   7  33885  4520  Офицер
+23 Артем_Титанов      9  17   8  15935  4471  Офицер
+24 MapTuH             5  13   6  97818  4451  Лидер
+25 Volgn_VG           8   9   9  32975  4366  Офицер
+26 RelikST            6   7   6  13000  3958  Офицер
+27 WhySenseless       4  28   1  45948  3236  Офицер
+28 Тряси_Мопсярками   7  17   8  53924  2946  Офицер
+29 ShasNachnetsya     6  19   4  42580  2754  Полковник
+30 АНДРЮХА_КАСТЕТ     3  12   4  56974  1472  Офицер</pre>
+          <p class="hint">как есть, без постобработки — дальше слепок уходит в парсер и раскладывается по колонкам.</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- ===== WHAT CHANGES ===== -->
+    <section class="block">
+      <p class="kicker">что меняется</p>
+      <h2>Любой скрин, доли секунды, меньше ручной возни</h2>
+      <ul>
+        <li>
+          <b>Любые скриншоты.</b>
+          <span>Откаты, нестандартные разрешения, Win+Shift+S, всё вместе. Раньше приходилось подбирать «правильный» способ скрина — скоро это перестанет иметь значение.</span>
+        </li>
+        <li>
+          <b>Скорость.</b>
+          <span>Старый движок тратит около 7 секунд и два прогона на один скрин. Новая модель — доли секунды. Очереди сразу после КВ, когда все заливают скрины разом, исчезают.</span>
+        </li>
+        <li>
+          <b>Точность.</b>
+          <span>Чище распознавание — меньше правок вручную и больше доверия к цифрам сразу после боя.</span>
+        </li>
+      </ul>
+
+      <div class="ba">
+        <div class="cell">
+          <div class="lab">обработка</div>
+          <div class="row"><span class="old">~7 с</span><span class="arr">→</span><span class="new green">~0.4 с</span></div>
+        </div>
+        <div class="cell">
+          <div class="lab">проходов</div>
+          <div class="row"><span class="old">два</span><span class="arr">→</span><span class="new">один</span></div>
+        </div>
+        <div class="cell">
+          <div class="lab">скриншот</div>
+          <div class="row"><span class="old">«правильный»</span><span class="arr">→</span><span class="new">любой</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PRICE ===== -->
+    <section class="block">
+      <p class="kicker">куда идёт цена</p>
+      <h2>Чем устойчивее проект — тем доступнее подписка</h2>
+      <p>Новый движок тяжелее в обслуживании, но цель ровно обратная подорожанию: по мере роста сервиса мы хотим
+        со временем опустить подписку до <b>~400&nbsp;₽ за весь клан</b> или ниже. Подписка остаётся одна на клан —
+        рядовым игрокам платить не нужно, а актуальные условия всегда на сайте.</p>
+    </section>
+
+    <!-- ===== SUPPORT ===== -->
+    <section class="block" style="border-top:0;padding-top:8px">
+      <div class="support">
+        <p class="kicker" style="color:var(--geiger)">поддержать</p>
+        <h2>Хотите ускорить переход?</h2>
+        <p class="muted">Новая модель уже в работе. Чем больше кланов с нами, тем быстрее она доедет до всех — и тем доступнее станет сервис.
+          Помочь можно двумя простыми вещами:</p>
+        <div class="actions">
+          <!-- замените href на прямую ссылку на донат/подписку на вашем сайте -->
+          <a class="btn primary" href="https://scwa.ru/support-me">Поддержать разработку</a>
+          <a class="btn ghost" href="https://scwa.ru/">Рассказать своему клану</a>
+        </div>
+        <p class="thanks">Спасибо, что читаете и пользуетесь SCWA. Любой фидбек — баги, идеи, критика — делает инструмент лучше. Увидимся на КВ&nbsp;🤝</p>
+      </div>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span>SCWA · DEVLOG&nbsp;#01</span>
+      <a href="https://scwa.ru/">scwa.ru</a>
+      <span class="right">© 2026 SCWA</span>
+    </div>
+  </footer>
+
+</body>
+</html>
