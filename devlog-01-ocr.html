@@ -43,15 +43,28 @@
 
   /* ---- top status strip ---- */
   .statusbar{
+    position:sticky;top:0;z-index:30;
     border-bottom:1px solid var(--line-soft);
-    background:linear-gradient(180deg,rgba(35,39,26,.55),rgba(19,21,14,0));
+    background:linear-gradient(180deg,rgba(23,26,17,.96),rgba(19,21,14,.86));
+    backdrop-filter:blur(6px);
   }
   .statusbar .wrap{
-    display:flex;align-items:center;gap:14px;
+    display:flex;align-items:center;gap:12px;
     height:46px;
     font-family:"JetBrains Mono",monospace;
     font-size:12px;letter-spacing:.16em;text-transform:uppercase;
     color:var(--ink-dim);
+  }
+  .statusbar a.back{
+    display:inline-flex;align-items:center;gap:7px;
+    color:var(--rust);text-decoration:none;padding:5px 11px;border:1px solid var(--line-soft);
+    border-radius:4px;transition:.13s ease;
+  }
+  .statusbar a.back:hover{color:var(--rust-bright);border-color:var(--rust);background:var(--panel)}
+  .statusbar .marker{display:flex;align-items:center;gap:12px}
+  @media(max-width:560px){
+    .statusbar .marker span:not(.dot){display:none}
+    .statusbar .right{display:none}
   }
   .dot{width:8px;height:8px;border-radius:50%;background:var(--geiger);
     box-shadow:0 0 0 0 rgba(159,186,90,.7);animation:pulse 2.4s ease-out infinite}
@@ -210,14 +223,43 @@
   @media(prefers-reduced-motion:reduce){
     .dot,.eyebrow .cursor{animation:none}
   }
+
+  /* ---- lightbox (messenger-style fullscreen) ---- */
+  img.zoomable{cursor:zoom-in;transition:filter .15s ease}
+  img.zoomable:hover{filter:brightness(1.06)}
+  .lightbox{
+    position:fixed;inset:0;z-index:60;display:none;
+    align-items:center;justify-content:center;padding:24px;
+    background:rgba(8,9,5,.93);backdrop-filter:blur(4px);
+  }
+  .lightbox.open{display:flex}
+  .lightbox img{
+    max-width:96vw;max-height:92vh;width:auto;height:auto;border-radius:4px;
+    border:1px solid var(--line);box-shadow:0 30px 90px -20px rgba(0,0,0,.95);cursor:zoom-out;
+  }
+  .lightbox .close{
+    position:absolute;top:16px;right:18px;width:42px;height:42px;cursor:pointer;
+    border:1px solid var(--line);background:rgba(29,32,22,.85);color:var(--ink);border-radius:6px;
+    font-family:"JetBrains Mono",monospace;font-size:18px;line-height:1;
+    display:flex;align-items:center;justify-content:center;transition:.13s ease;
+  }
+  .lightbox .close:hover{border-color:var(--rust);color:var(--rust-bright)}
+  .lightbox .hintbar{
+    position:absolute;bottom:18px;left:0;right:0;text-align:center;
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);
+  }
 </style>
 </head>
 <body>
 
   <div class="statusbar">
     <div class="wrap">
-      <span class="dot" aria-hidden="true"></span>
-      <span>SCWA</span><span class="sep">//</span><span>devlog</span>
+      <a class="back" href="/">←&nbsp;документация</a>
+      <span class="sep">//</span>
+      <span class="marker">
+        <span class="dot" aria-hidden="true"></span>
+        <span>SCWA</span><span class="sep">//</span><span>devlog</span>
+      </span>
       <span class="right">обновления сервиса</span>
     </div>
   </div>
@@ -247,7 +289,7 @@
           <span>readout</span><span class="sep" style="color:var(--ink-faint)">//</span><b>распознавание</b>
           <span class="who">демо новой модели</span>
         </div>
-        <img src="scwa_demo_hq.gif" alt="Демонстрация: искажённый скриншот КВ распознаётся в чистую таблицу за доли секунды">
+        <img class="zoomable" src="scwa_demo_hq.gif" alt="Демонстрация: искажённый скриншот КВ распознаётся в чистую таблицу за доли секунды">
       </div>
       <p class="caption">
         На вход — <span class="stress">худший возможный скрин</span>: разрешение растянуто в 4:3, кадр снят с отката и сверху прогнан через Win+Shift+S.
@@ -260,7 +302,7 @@
       <details class="drawer">
         <summary>Исходный скриншот <span class="sig">· вход</span><span class="pm" aria-hidden="true"></span></summary>
         <div class="body">
-          <img src="original_kv.png" alt="Исходный искажённый скриншот результатов клановой войны">
+          <img class="zoomable" src="original_kv.png" alt="Исходный искажённый скриншот результатов клановой войны">
           <p class="hint">4:3-растяжение · откат · Win+Shift+S — то, что обычный OCR не вывозит.</p>
         </div>
       </details>
@@ -371,6 +413,35 @@
       <span class="right">© 2026 SCWA</span>
     </div>
   </footer>
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр изображения">
+    <button class="close" id="lbClose" type="button" aria-label="Закрыть">✕</button>
+    <img id="lbImg" src="" alt="">
+    <div class="hintbar">клик вне изображения или Esc — закрыть</div>
+  </div>
+
+  <script>
+  (function(){
+    var lb=document.getElementById('lightbox'),
+        img=document.getElementById('lbImg'),
+        closeBtn=document.getElementById('lbClose');
+    function open(src,alt){
+      img.setAttribute('src',src);img.setAttribute('alt',alt||'');
+      lb.classList.add('open');document.body.style.overflow='hidden';
+    }
+    function close(){
+      lb.classList.remove('open');img.setAttribute('src','');document.body.style.overflow='';
+    }
+    document.querySelectorAll('img.zoomable').forEach(function(el){
+      el.addEventListener('click',function(){open(el.getAttribute('src'),el.getAttribute('alt'));});
+    });
+    closeBtn.addEventListener('click',close);
+    img.addEventListener('click',close);
+    lb.addEventListener('click',function(e){if(e.target===lb)close();});
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape'&&lb.classList.contains('open'))close();
+    });
+  })();
+  </script>
 
 </body>
 </html>
