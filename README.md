@@ -1,52 +1,34 @@
-# 🎮 Stalcraft Clan Analytics
+# SCWA — Stalcraft Clan Wars Analytics
 
-[![Discord](https://img.shields.io/badge/Discord-Поддержка-5865F2?logo=discord&style=flat-square)](https://discord.gg/uS4sbeYdyp)
-[![Email](https://img.shields.io/badge/Email-StalcraftCWASupport@protonmail.com-blue?style=flat-square)](mailto:StalcraftCWASupport@protonmail.com)
+[![Site](https://img.shields.io/badge/site-scwa.ru-D2832E?style=flat-square)](https://scwa.ru)
+[![Docs](https://img.shields.io/badge/docs-docs.scwa.ru-9FBA5A?style=flat-square)](https://docs.scwa.ru)
+[![Discord](https://img.shields.io/badge/Discord-сообщество-5865F2?logo=discord&style=flat-square)](https://discord.gg/uS4sbeYdyp)
 
-###  ⚠️ **Внимание!** Содержимое README не актуально, спасибо за внимание
-> ⚠️ **Внимание!** Сервис находится на стадии **бета-тестирования**.  
-> Некоторые функции могут работать некорректно, иметь ограничения или временно отключаться.  
-> Мы активно работаем над улучшением стабильности и точности распознавания.  
-> Если вы обнаружили ошибку — пожалуйста, сообщите нам через [Discord](https://discord.gg/uS4sbeYdyp)!
+**SCWA** — сервис аналитики клановых войн (КВ) в STALCRAFT / STALZONE: Discord-бот
+и веб-интерфейс. Распознаёт скриншоты таблиц боёв (OCR), ведёт статистику игроков и
+кланов, строит графики, помогает планировать КВ.
 
-**SCA** — Discord-бот для автоматического анализа статистики клановых войн (CW) в игре Stalcraft.
+➡️ **Сайт и доступ к сервису: [scwa.ru](https://scwa.ru)**
 
-## 💰 О стоимости
+Этот репозиторий — **документация** проекта (хостится на
+[docs.scwa.ru](https://docs.scwa.ru)):
 
-**Текущая цена (бета-тестирование): 500 ₽ / 30 дней**
+- [О проекте](https://docs.scwa.ru/info)
+- [Руководство пользователя](https://docs.scwa.ru/GUIDE)
+- [Девлоги / обновления](https://docs.scwa.ru/)
+- [Пользовательское соглашение](https://docs.scwa.ru/) ·
+  [Политика конфиденциальности](https://docs.scwa.ru/privacy) ·
+  [Публичная оферта](https://docs.scwa.ru/offer)
 
-⚠️ Это **не финальная стоимость**. По мере роста аудитории мы планируем **снизить цену в 2-3 раза**. Чем больше кланов пользуется сервисом — тем дешевле он становится!
+## Контакты
 
-> Хотите помочь? Расскажите о нас другим кланам! 💙
-
-## ✨ Возможности
-
-- 📸 **Автоматическое распознавание** скриншотов CW с помощью OCR
-- 📊 **Детальная статистика** по каждому игроку и клану
-- 📈 **Графики прогресса** (счёт, K/D, тренды)
-- 📥 **Экспорт в Excel** для дальнейшего анализа
-- 🔐 **OAuth авторизация** через Discord и EXBO
-- 👑 **Управление скриншотами** для лидеров и полковников
-
-## 📖 Документация
-
-- [📘 Руководство пользователя](https://sahabush.github.io/Stalcraft-Clan-Analytics/GUIDE)
-- [📜 Пользовательское соглашение](https://sahabush.github.io/Stalcraft-Clan-Analytics/)
-- [🔒 Политика конфиденциальности](https://sahabush.github.io/Stalcraft-Clan-Analytics/privacy)
-
-## 🚀 Быстрый старт
-
-1. [Пригласите бота](https://discord.com/api/oauth2/authorize?client_id=1487403880991031450&permissions=274878024704&scope=bot%20applications.commands)
-2. Введите `/auth` для авторизации
-3. Введите `/clan select` и укажите название клана
-4. Загрузите скриншот через `/add`
-5. Смотрите статистику через `/table_full` или `/player`
-
-## 📞 Поддержка
-
-- **Discord:** [https://discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
-- **Email:** [StalcraftCWASupport@protonmail.com](mailto:StalcraftCWASupport@protonmail.com)
+- Поддержка: [scwa.ru/support](https://scwa.ru/support)
+- Email: [support@scwa.ru](mailto:support@scwa.ru)
+- Discord: [discord.gg/uS4sbeYdyp](https://discord.gg/uS4sbeYdyp)
 
 ---
 
-© Stalcraft Clan Analytics, 2026
+> Сервис не является официальным продуктом EXBO. Все права на STALCRAFT/STALZONE
+> принадлежат правообладателям.
+
+© SCA (SCWA), 2026
