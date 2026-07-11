@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCWA · Devlog #4 — Новый вход, карты мира и настоящие модели</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap&subset=cyrillic,latin" rel="stylesheet">
+<style>
+  :root{
+    --bg:#13150E;
+    --bg-2:#171A11;
+    --panel:#1D2016;
+    --panel-2:#23271A;
+    --line:#3A3F2D;
+    --line-soft:#2B3020;
+    --ink:#EAE6D8;
+    --ink-dim:#9C9882;
+    --ink-faint:#6E6B58;
+    --rust:#D2832E;
+    --rust-bright:#EE9A3C;
+    --geiger:#9FBA5A;
+    --maxw:920px;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #1C2015 0%, var(--bg) 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"Manrope",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(210,131,46,.32);color:#fff}
+
+  *::-webkit-scrollbar{width:8px;height:8px}
+  *::-webkit-scrollbar-track{background:transparent}
+  *::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  *::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
+  html{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+  .statusbar{
+    position:sticky;top:0;z-index:30;
+    border-bottom:1px solid var(--line-soft);
+    background:linear-gradient(180deg,rgba(23,26,17,.96),rgba(19,21,14,.86));
+    backdrop-filter:blur(6px);
+  }
+  .statusbar .wrap{
+    display:flex;align-items:center;gap:12px;
+    height:46px;
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .statusbar a.back{
+    display:inline-flex;align-items:center;gap:7px;
+    color:var(--rust);text-decoration:none;padding:5px 11px;border:1px solid var(--line-soft);
+    border-radius:4px;transition:.13s ease;
+  }
+  .statusbar a.back:hover{color:var(--rust-bright);border-color:var(--rust);background:var(--panel)}
+  .statusbar .marker{display:flex;align-items:center;gap:12px}
+  @media(max-width:560px){
+    .statusbar .marker span:not(.dot){display:none}
+    .statusbar .right{display:none}
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--rust-bright);
+    box-shadow:0 0 0 0 rgba(238,154,60,.7);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(238,154,60,.55)}
+    70%{box-shadow:0 0 0 7px rgba(238,154,60,0)}
+    100%{box-shadow:0 0 0 0 rgba(238,154,60,0)}
+  }
+  .statusbar .sep{color:var(--ink-faint)}
+  .statusbar .right{margin-left:auto;color:var(--ink-faint)}
+
+  header.hero{padding:64px 0 30px}
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12.5px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--rust);display:flex;align-items:center;gap:12px;margin-bottom:22px;
+  }
+  .eyebrow .num{color:var(--ink);font-weight:700}
+  .eyebrow .cursor{
+    width:9px;height:16px;background:var(--rust);display:inline-block;translate:0 2px;
+    animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  h1{
+    font-family:"Oswald",sans-serif;font-weight:600;
+    font-size:clamp(34px,6.4vw,60px);line-height:1.02;letter-spacing:.005em;
+    margin:0 0 18px;text-wrap:balance;
+  }
+  h1 .hl{color:var(--rust-bright)}
+  .lede{font-size:clamp(17px,2.4vw,20px);color:var(--ink-dim);max-width:62ch;margin:0}
+
+  section.block{padding:42px 0;border-top:1px solid var(--line-soft)}
+  .kicker{
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--rust);margin:0 0 14px;
+  }
+  h2{font-family:"Oswald",sans-serif;font-weight:600;font-size:clamp(24px,4vw,33px);
+    line-height:1.1;margin:0 0 18px;letter-spacing:.01em}
+  h3{font-family:"Oswald",sans-serif;font-weight:500;font-size:22px;line-height:1.2;margin:24px 0 12px;color:var(--ink)}
+  p{margin:0 0 16px;color:var(--ink)}
+  p.muted{color:var(--ink-dim)}
+  a.inline{color:var(--rust-bright);text-decoration:none;border-bottom:1px solid var(--line)}
+  a.inline:hover{border-color:var(--rust-bright)}
+  code{font-family:"JetBrains Mono",monospace;font-size:.86em;background:#0C0E08;
+    border:1px solid var(--line-soft);border-radius:3px;padding:1px 6px;color:var(--rust-bright)}
+
+  .highlight-box{
+    background:#0C0E08;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:20px 24px;
+    box-shadow:inset 0 0 0 1px rgba(238,154,60,.05);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .highlight-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--rust);
+  }
+
+  /* ===== FIGURES ===== */
+  figure.shot{
+    margin:26px 0;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+    background:#0C0E08;box-shadow:0 12px 40px rgba(0,0,0,.32);
+  }
+  figure.shot img{display:block;width:100%;height:auto}
+  figure.shot figcaption{
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.06em;
+    color:var(--ink-dim);padding:11px 16px;border-top:1px solid var(--line-soft);
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  }
+  figure.shot figcaption b{color:var(--rust);font-weight:600}
+
+  .support{
+    margin:8px 0 0;background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:6px;padding:30px 26px;
+  }
+  .support h2{margin-bottom:10px}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+  a.btn{
+    text-decoration:none;font-family:"Oswald",sans-serif;font-weight:600;font-size:16px;letter-spacing:.02em;
+    padding:12px 22px;border-radius:3px;display:inline-flex;align-items:center;gap:9px;transition:.15s ease;
+  }
+  a.btn.primary{background:var(--rust);color:#15150C}
+  a.btn.primary:hover{background:var(--rust-bright)}
+  a.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  a.btn.ghost:hover{border-color:var(--rust);color:var(--rust-bright)}
+
+  footer.foot{border-top:1px solid var(--line-soft);margin-top:44px;padding:26px 0 60px}
+  footer.foot .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.1em;color:var(--ink-faint)}
+  footer.foot a{color:var(--ink-dim);text-decoration:none}
+  footer.foot a:hover{color:var(--rust)}
+  footer.foot .right{margin-left:auto}
+
+  ul.custom-list {list-style:none;margin:6px 0 16px;padding:0}
+  ul.custom-list li {position:relative;padding:8px 0 8px 26px;border-top:1px solid var(--line-soft);color:var(--ink-dim)}
+  ul.custom-list li:first-child {border-top:0}
+  ul.custom-list li::before {content:"";position:absolute;left:2px;top:15px;width:9px;height:9px;background:var(--rust);clip-path:polygon(0 0,100% 50%,0 100%)}
+  ul.custom-list li b {font-weight:700;color:var(--ink)}
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <div class="wrap">
+      <a class="back" href="/">←&nbsp;на главную</a>
+      <span class="sep">//</span>
+      <span class="marker">
+        <span class="dot" aria-hidden="true"></span>
+        <span>SCWA</span><span class="sep">//</span><span>devlog</span>
+      </span>
+      <span class="right">обновления сервиса</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">
+        <span class="num">#04</span><span>Вход · Снаряжение · Карты · OCR</span>
+        <span class="cursor" aria-hidden="true"></span>
+      </div>
+      <h1>Самый большой апдейт: <span class="hl">снаряжение, карты и новый вход</span></h1>
+      <p class="lede">Рады анонсировать сразу большой пласт нового. Переработанная система входа. Личный редактор снаряжения с полным калькулятором брони и артефактов. Карты мира, собранные из игры, и настоящие 3D-модели построек вместо кубиков. Личная статистика для каждого игрока. И внятный план на то, что будет дальше. А ещё — сервис уходит от подписки в бесплатную модель.</p>
+    </header>
+
+    <!-- ===== ВХОД / БЕЗОПАСНОСТЬ ===== -->
+    <section class="block" style="padding-top: 10px;">
+      <p class="kicker">вход и аккаунты</p>
+      <h2>Заходить стало удобнее и безопаснее</h2>
+      <p>
+        Мы переработали систему входа. Раньше зайти можно было только через Discord — теперь
+        способов больше, а сама авторизация стала заметно надёжнее.
+      </p>
+
+      <p>Что нового:</p>
+      <ul class="custom-list">
+        <li><b>Вход по логину и паролю</b> — можно завести аккаунт напрямую, без Discord.</li>
+        <li><b>Вход через EXBO</b> — можно войти сразу игровым аккаунтом Stalcraft, отдельным способом.</li>
+        <li><b>Discord — как и раньше</b> — привычный вход никуда не делся.</li>
+        <li><b>Всё связывается в один аккаунт</b> — логин/пароль, Discord и EXBO можно привязать к одному профилю и заходить чем удобнее.</li>
+      </ul>
+
+      <div class="highlight-box">
+        <p style="margin:0; font-weight: 500;">
+          Главное изменение — мы полностью перешли с прежних токенов (JWT) на <b>сессионные cookie-файлы</b>.
+          Если по-простому: раньше «пропуск» от вашего входа лежал в хранилище страницы, откуда его
+          теоретически мог утянуть вредоносный скрипт. Теперь сессия хранится в защищённой служебной
+          куке (<code>httpOnly</code>), к которой сам сайт-страница доступа не имеет, — украсть её из
+          браузера намного сложнее. Пароли, как и прежде, <b>никогда не хранятся в открытом виде</b>,
+          а платёжные и чужие учётные данные мы не видим и не храним.
+        </p>
+      </div>
+
+      <p class="muted">
+        Изменения затрагивают только вход — вся ваша статистика, кланы и история на месте. Если после
+        обновления сайт попросит войти заново — это нормально, просто зайдите привычным способом.
+        Заодно обновили документы: <a class="inline" href="https://docs.scwa.ru/privacy">Политику конфиденциальности</a>
+        и <a class="inline" href="https://docs.scwa.ru/">Пользовательское соглашение</a>.
+      </p>
+    </section>
+
+    <!-- ===== СНАРЯЖЕНИЕ ===== -->
+    <section class="block">
+      <p class="kicker">снаряжение</p>
+      <h2>Редактор снаряжения с настоящим калькулятором</h2>
+      <p>
+        Большая новая штука — <b>редактор снаряжения</b> прямо в личном кабинете. Это не просто
+        «повесить картинки брони»: под ним полноценный калькулятор, который считает так же, как игра.
+        Броня, контейнер, набор артефактов — а на выходе честные итоговые цифры сборки.
+      </p>
+
+      <figure class="shot">
+        <img src="assets/devlog-04/redactor.png" alt="Редактор снаряжения: инвентарь, слоты брони и контейнер">
+        <figcaption><b>Редактор снаряжения</b> — слоты брони, контейнер и артефакты, всё перетаскивается прямо в инвентаре.</figcaption>
+      </figure>
+
+      <p>Что уже умеет калькулятор:</p>
+      <ul class="custom-list">
+        <li><b>Приведённое ХП</b> — реальная живучесть сборки с учётом пулестойкости, а не абстрактные проценты.</li>
+        <li><b>Заточка брони и артефактов</b> — пересчёт пулестойкости и свойств по уровням прокачки.</li>
+        <li><b>Артефакты целиком</b> — качество, потенциал, доп-свойства и накопление заражений.</li>
+        <li><b>Контейнер</b> — эффективность и внутренняя защита, которые гасят накопления.</li>
+        <li><b>Скорость и предупреждения</b> — движение/бег и подсветка опасных лимитов по заражениям.</li>
+      </ul>
+
+      <figure class="shot">
+        <img src="assets/devlog-04/calc.png" alt="Калькулятор сборки: итоговые характеристики">
+        <figcaption><b>Итоги сборки</b> — характеристики пересчитываются вживую при любой замене предмета или заточки.</figcaption>
+      </figure>
+
+      <div class="highlight-box">
+        <p style="margin:0; font-weight: 500;">
+          Скоро каждый игрок сможет <b>привязать сборку к своему профилю</b> и сам решать, кому её
+          показывать: держать при себе, открыть <b>всему клану</b> или сделать полностью публичной.
+          Отличный способ показать напарникам, в чём вы выходите на КВ, и обсудить билды всей командой.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== ЛИЧНАЯ СТАТИСТИКА ===== -->
+    <section class="block">
+      <p class="kicker">личная статистика</p>
+      <h2>Своя статистика — для каждого игрока</h2>
+      <p>
+        Ещё одно, чего давно ждали: <b>личная статистика в кабинете у каждого игрока</b>, а не только
+        у руководства клана. Загруженные командой скриншоты КВ — это ведь и ваши бои тоже, логично
+        видеть по ним свою историю.
+      </p>
+      <div class="highlight-box">
+        <p style="margin:0; font-weight: 500;">
+          Работает честно и прозрачно: пока оригинальные скриншоты живы — то есть их не удалило
+          руководство подразделения и не унёс <b>90-дневный таймер хранения</b> — вы сможете смотреть
+          свою личную статистику по этим боям в своём кабинете. Никакой магии: есть данные — есть и
+          ваша сводка по ним.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== КАРТЫ МИРА ===== -->
+    <section class="block">
+      <p class="kicker">карты мира</p>
+      <h2>Карты мира: от кэша игры — к рабочему планировщику</h2>
+      <p>
+        В прошлом девлоге мы рассказывали, как научились доставать <b>чистые карты прямо из файлов
+        игры</b> — вид сверху, без меток и интерфейса, да ещё и с «рентгеном» планировки зданий. Теперь
+        эти карты живут не в вакууме: мы собираем их в полноценный планировщик клановых войн.
+      </p>
+
+      <figure class="shot">
+        <img src="assets/devlog-04/berdovka.png" alt="3D-сцена планировщика: карта Малая Бердовка">
+        <figcaption><b>Планировщик · 3D</b> — Малая Бердовка, собранная из данных игры: кварталы, крыши, рельеф, дороги — без внутриигровой разметки.</figcaption>
+      </figure>
+
+      <p>
+        Карта читается как настоящая топография района: видно застройку, проезды и open-пространства,
+        по которым и строится тактика на КВ. Сверху ложится слой обозначений — точки, маршруты и
+        объекты, которые можно расставлять и двигать прямо в 3D. Есть переключение
+        <code>3D / 2D</code>, выбор арены и режим Голд-Дропа.
+      </p>
+      <p class="muted">
+        Извлекатель карт по-прежнему выложен <b>бесплатно и открыто</b> отдельным инструментом — он
+        только читает ваш локальный кэш игры, ничего в ней не меняет, не лезет в сеть и не даёт
+        преимуществ в бою.
+      </p>
+    </section>
+
+    <!-- ===== 3D-МОДЕЛИ ===== -->
+    <section class="block">
+      <p class="kicker">объекты планировщика</p>
+      <h2>Настоящие 3D-модели вместо заглушек</h2>
+      <p>
+        Первые версии планировщика расставляли объекты «кубиками» — грубыми процедурными заглушками
+        просто чтобы обозначить, что и где стоит. Теперь мы меняем их на <b>настоящие 3D-модели</b>
+        инженерных построек КВ: баррикады, палатки, аванпосты, габионы и прочая фортификация.
+      </p>
+
+      <figure class="shot">
+        <img src="assets/devlog-04/barricade.png" alt="3D-модель баррикады крупным планом">
+        <figcaption><b>Баррикада</b> — настоящая модель со своей геометрией и текстурой вместо кубика-заглушки.</figcaption>
+      </figure>
+
+      <p>
+        Разница не только косметическая. Реальные габариты и форма построек важны для планирования:
+        баррикада перекрывает конкретный сектор, у палатки свой силуэт, аванпост занимает своё место.
+        С точными моделями план на КВ ближе к тому, что реально будет на поле.
+      </p>
+      <p class="muted">
+        Библиотека моделей продолжит пополняться — доводим объекты по одному, чтобы каждый выглядел и
+        стоял на карте так, как в игре.
+      </p>
+    </section>
+
+    <!-- ===== OCR ===== -->
+    <section class="block">
+      <p class="kicker">распознавание</p>
+      <h2>Новый OCR: движемся к релизу</h2>
+      <p>
+        По распознаванию таблиц КВ продолжаем то, о чём писали раньше. Новый движок распознаёт
+        заметно точнее старого — настолько, что прежняя «чистилка» вывода (её писали под мусорный
+        текст старого OCR) начала ему мешать и портить уже верные строки. Мы переписали постобработку
+        под чистый вывод.
+      </p>
+
+      <div class="highlight-box">
+        <p style="margin:0; font-weight: 500;">
+          Следующий большой шаг — единый конвейер распознавания со <b>всех источников</b> и новый
+          автодетект таблицы. Формат игровых таблиц мы планируем менять, и старый детектор сетки под
+          него уже не подойдёт — границы, строки и колонки будем находить заново, под новую раскладку.
+          Плюс распознавание уезжает на <b>GPU</b>, чтобы держать скорость при потоке скриншотов.
+        </p>
+      </div>
+
+      <p class="muted">
+        Делаем всё по порядку, чтобы релиз был стабильным: сперва новый детект и парсинг под новый
+        формат, потом — открытие для всех. Расскажем подробнее в следующем девлоге.
+      </p>
+    </section>
+
+    <!-- ===== ПЛАНЫ ===== -->
+    <section class="block">
+      <p class="kicker">что дальше</p>
+      <h2>Куда всё это движется</h2>
+      <p>
+        Отдельно — карта того, что уже в работе и приземлится в ближайших обновлениях. Многое из
+        этого напрямую вырастает из нового OCR и разбора данных боёв:
+      </p>
+      <ul class="custom-list">
+        <li><b>Автоопределение вражеских кланов</b> — сервис сам будет узнавать клан противника по бою, без ручной разметки.</li>
+        <li><b>Метки победа / поражение</b> — исход КВ автоматически проставляется к каждому бою и попадает в статистику.</li>
+        <li><b>Шаринг сборок</b> — привязка снаряжения к профилю и открытие его клану или всем желающим.</li>
+        <li><b>Личная статистика игроков</b> — своя сводка по боям в кабинете, пока живы исходные скриншоты.</li>
+        <li><b>Больше 3D-моделей</b> — постройки планировщика доводим по одной до вида «как в игре».</li>
+        <li><b>Единый OCR со всех источников</b> — новый автодетект таблиц и распознавание на GPU.</li>
+      </ul>
+      <p class="muted">
+        Список живой — что-то выйдет раньше, что-то позже, но направление именно такое: меньше ручной
+        рутины, больше автоматики и полезных мелочей вокруг КВ.
+      </p>
+    </section>
+
+    <!-- ===== SUPPORT ===== -->
+    <section class="block" style="border-top:0;padding-top:8px">
+      <div class="support">
+        <p class="kicker" style="color:var(--geiger)">поддержать</p>
+        <h2>Сервис уходит от подписки</h2>
+        <p class="muted">Мы переводим SCWA на бесплатную модель — уже в ближайшем обновлении подписки не станет, и весь функционал будет доступен без оплаты. Но серверы, вычисления под OCR/сканер и разработка всё равно чего-то стоят, поэтому проект будет жить на добровольной поддержке. Донат ничего не «открывает» и не даёт преимуществ — он просто помогает всему этому выходить в свет быстрее. Спасибо, что вы с нами 💛</p>
+        <div class="actions">
+          <a class="btn primary" href="https://scwa.ru/support-me">Поддержать разработку</a>
+          <a class="btn ghost" href="https://scwa.ru/">Рассказать своему клану</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span>SCWA · DEVLOG&nbsp;#04</span>
+      <a href="https://scwa.ru/">scwa.ru</a>
+      <span class="right">© 2026 SCWA</span>
+    </div>
+  </footer>
+
+</body>
+</html>
