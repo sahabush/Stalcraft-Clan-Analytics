@@ -304,7 +304,7 @@ description: Инструкция по использованию SCA (SCWA)
 
 - [Пользовательское соглашение](https://docs.scwa.ru/)
 - [Политика конфиденциальности](https://docs.scwa.ru/privacy)
-- [Публичная оферта](https://docs.scwa.ru/offer)
+- [Публичная оферта о пожертвовании](https://docs.scwa.ru/offer)
 - [О проекте](https://docs.scwa.ru/info)
 
 © SCA (SCWA), 2026

@@ -18,7 +18,7 @@
 - [Девлоги / обновления](https://docs.scwa.ru/)
 - [Пользовательское соглашение](https://docs.scwa.ru/) ·
   [Политика конфиденциальности](https://docs.scwa.ru/privacy) ·
-  [Публичная оферта](https://docs.scwa.ru/offer)
+  [Публичная оферта о пожертвовании](https://docs.scwa.ru/offer)
 
 ## Контакты
 
