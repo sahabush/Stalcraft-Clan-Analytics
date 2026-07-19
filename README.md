@@ -1,10 +1,10 @@
-# SCWA — Stalcraft Clan Wars Analytics
+# SCWA — Stalzone Clan Wars Analytics
 
 [![Site](https://img.shields.io/badge/site-scwa.ru-D2832E?style=flat-square)](https://scwa.ru)
 [![Docs](https://img.shields.io/badge/docs-docs.scwa.ru-9FBA5A?style=flat-square)](https://docs.scwa.ru)
 [![Discord](https://img.shields.io/badge/Discord-сообщество-5865F2?logo=discord&style=flat-square)](https://discord.gg/uS4sbeYdyp)
 
-**SCWA** — сервис аналитики клановых войн (КВ) в STALCRAFT / STALZONE: Discord-бот
+**SCWA** — сервис аналитики клановых войн (КВ) в STALZONE: Discord-бот
 и веб-интерфейс. Распознаёт скриншоты таблиц боёв (OCR), ведёт статистику игроков и
 кланов, строит графики, помогает планировать КВ.
 
