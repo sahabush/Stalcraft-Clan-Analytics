@@ -58,9 +58,9 @@ We collect only what the Service needs, never sell it and show no ads. Details â
 - use the Service to harm, harass or deceive others;
 - exceed rate limits or automate requests beyond normal use.
 
-## 7. Clan leaders and colonels
+## 7. Clan leaders, colonels and officers
 
-Leaders and colonels (per the STALZONE API) get extra rights: reviewing all clan screenshots, rejecting unconfirmed ones, removing duplicates, clearing statistics and exporting data. They must use these rights in the interest of the clan.
+Leaders, colonels and officers (per the STALZONE API) get extra rights: reviewing and editing all clan screenshots, rejecting unconfirmed ones, removing duplicates, clearing statistics and exporting data. Managing squads and clan loadouts is limited to leaders and colonels. They must use these rights in the interest of the clan.
 
 ## 8. Disputes within clans
 
