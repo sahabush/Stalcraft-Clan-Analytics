@@ -77,7 +77,7 @@ What you publish yourself (for example a profile set to "everyone") is visible t
 
 ## 7. Where it is stored
 
-Our servers are located in the Netherlands (EU). Donation processing takes place in Russia through the payment provider; that transfer is necessary to carry out the donation you request (GDPR Art. 49(1)(b)).
+Our main servers, where your data is stored and processed, are located in Finland (EU). Screenshot recognition mostly runs on servers in Russia: only the image is sent there, and it is not kept after processing. Donations are processed in Russia by the payment provider. These transfers outside the EU are necessary to provide the features you request — recognising the screenshot you upload, carrying out the donation you make (GDPR Art. 49(1)(b)).
 
 ## 8. Your rights
 
