@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>SCWA · Devlog #6 — Под Малой Бердовкой ничего не произошло</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Пересобранные 3D-карты арен, удобная проверка скриншота, журнал правок для офицеров и благодарность oarer и stalhub.dev.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap&subset=cyrillic,latin" rel="stylesheet">
+<style>
+  :root{
+    --bg:#13150E; --bg-2:#171A11; --panel:#1D2016; --panel-2:#23271A; --deep:#0C0E08;
+    --line:#3A3F2D; --line-soft:#2B3020;
+    --ink:#EAE6D8; --ink-dim:#9C9882; --ink-faint:#6E6B58;
+    --rust:#D2832E; --rust-bright:#EE9A3C; --geiger:#9FBA5A; --danger:#D0654E; --warn:#D9B04A;
+    --maxw:940px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+  body{
+    margin:0;color:var(--ink);font-family:"Manrope",system-ui,sans-serif;font-size:17px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(900px 420px at 85% -5%, rgba(210,131,46,.10) 0%, transparent 60%),
+      radial-gradient(1200px 600px at 50% -10%, #1C2015 0%, var(--bg) 60%),
+      var(--bg);
+  }
+  ::selection{background:rgba(210,131,46,.32);color:#fff}
+  *::-webkit-scrollbar{width:8px;height:8px}
+  *::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .mono{font-family:"JetBrains Mono",monospace}
+
+  /* ---------- статус-бар ---------- */
+  .statusbar{position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line-soft);
+    background:linear-gradient(180deg,rgba(23,26,17,.96),rgba(19,21,14,.86));backdrop-filter:blur(6px)}
+  .statusbar .wrap{display:flex;align-items:center;gap:12px;height:46px;font-family:"JetBrains Mono",monospace;
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim)}
+  .statusbar a.back{display:inline-flex;align-items:center;gap:7px;color:var(--rust);text-decoration:none;
+    padding:5px 11px;border:1px solid var(--line-soft);border-radius:4px;transition:.13s ease}
+  .statusbar a.back:hover{color:var(--rust-bright);border-color:var(--rust);background:var(--panel)}
+  .statusbar .marker{display:flex;align-items:center;gap:12px}
+  .statusbar .sep{color:var(--ink-faint)}
+  .statusbar .right{margin-left:auto;color:var(--ink-faint)}
+  @media(max-width:560px){.statusbar .marker span:not(.dot){display:none}.statusbar .right{display:none}}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--rust-bright);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(238,154,60,.55)}70%{box-shadow:0 0 0 7px rgba(238,154,60,0)}100%{box-shadow:0 0 0 0 rgba(238,154,60,0)}}
+
+  /* ---------- шапка ---------- */
+  header.hero{padding:62px 0 26px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;font-size:12.5px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--rust);display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:22px}
+  .eyebrow .num{color:var(--ink);font-weight:700}
+  .eyebrow .cursor{width:9px;height:16px;background:var(--rust);display:inline-block;translate:0 2px;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  h1{font-family:"Oswald",sans-serif;font-weight:600;font-size:clamp(34px,6.4vw,62px);line-height:1.02;
+    letter-spacing:.005em;margin:0 0 18px;text-wrap:balance}
+  h1 .hl{color:var(--rust-bright)}
+  .lede{font-size:clamp(17px,2.4vw,20px);color:var(--ink-dim);max-width:64ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin:22px 0 0;font-family:"JetBrains Mono",monospace;
+    font-size:12px;letter-spacing:.08em;color:var(--ink-faint);text-transform:uppercase}
+  .meta b{color:var(--ink-dim);font-weight:500}
+  .beta{display:inline-flex;align-items:center;gap:8px;color:var(--warn)}
+  .beta::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--warn)}
+
+  /* ---------- коротко ---------- */
+  .tldr{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:30px 0 0}
+  @media(max-width:640px){.tldr{grid-template-columns:1fr}}
+  .tldr a{position:relative;display:block;text-decoration:none;border:1px solid var(--line-soft);
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));border-radius:10px;padding:16px 18px 16px 58px;transition:.15s ease}
+  .tldr a:hover{border-color:var(--rust);transform:translateY(-1px)}
+  .tldr .n{position:absolute;left:16px;top:15px;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;
+    font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;color:var(--rust-bright);
+    background:rgba(210,131,46,.12);border:1px solid rgba(210,131,46,.3)}
+  .tldr b{display:block;font-family:"Oswald",sans-serif;font-weight:600;font-size:18px;letter-spacing:.02em;color:var(--ink);margin-bottom:3px}
+  .tldr span{color:var(--ink-dim);font-size:15px;line-height:1.5}
+
+  /* ---------- разделы ---------- */
+  section.block{padding:46px 0;border-top:1px solid var(--line-soft);scroll-margin-top:60px}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--rust);margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  .kicker .idx{color:var(--ink-faint)}
+  h2{font-family:"Oswald",sans-serif;font-weight:600;font-size:clamp(25px,4vw,34px);line-height:1.1;margin:0 0 18px;letter-spacing:.01em;text-wrap:balance}
+  p{margin:0 0 16px}
+  p.muted{color:var(--ink-dim)}
+  .tag{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;padding:2px 8px;border-radius:999px}
+  .tag.new{background:rgba(159,186,90,.16);color:var(--geiger)}
+  .tag.soon{background:rgba(210,131,46,.16);color:var(--rust-bright)}
+
+  ul.list{list-style:none;margin:6px 0 18px;padding:0}
+  ul.list li{position:relative;padding:9px 0 9px 26px;border-top:1px solid var(--line-soft);color:var(--ink-dim)}
+  ul.list li:first-child{border-top:0}
+  ul.list li::before{content:"";position:absolute;left:2px;top:16px;width:9px;height:9px;background:var(--rust);clip-path:polygon(0 0,100% 50%,0 100%)}
+  ul.list li b{color:var(--ink)}
+
+  .gives{margin:22px 0 4px;border:1px solid rgba(159,186,90,.28);background:rgba(159,186,90,.06);border-radius:8px;padding:14px 18px}
+  .gives .h{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--geiger);margin:0 0 6px}
+  .gives p{margin:0;color:var(--ink)}
+
+  /* пример «скрин и профиль» */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 10px}
+  @media(max-width:640px){.compare{grid-template-columns:1fr}}
+  .src{border:1px solid var(--line);border-radius:8px;background:var(--deep);overflow:hidden}
+  .src .top{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line-soft);
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim)}
+  .src .top i{font-style:normal;color:var(--rust)}
+  .src table{width:100%;border-collapse:collapse;font-family:"JetBrains Mono",monospace;font-size:13px}
+  .src td{padding:7px 14px;border-top:1px solid var(--line-soft);color:var(--ink)}
+  .src tr:first-child td{border-top:0}
+  .src td.r{text-align:right;color:var(--ink-dim)}
+  .chip{display:inline-block;font-family:"Manrope",sans-serif;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;margin-left:6px}
+  .chip.g{background:rgba(159,186,90,.16);color:var(--geiger)}
+  .chip.w{background:rgba(217,176,74,.16);color:var(--warn)}
+  .chip.d{background:rgba(208,101,78,.16);color:var(--danger)}
+  .chip.r{background:rgba(210,131,46,.16);color:var(--rust-bright)}
+  .caption{font-size:13px;color:var(--ink-faint);margin:0 0 18px}
+
+  /* метки активности */
+  .marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin:18px 0}
+  .mark{border:1px solid var(--line-soft);background:var(--panel);border-radius:8px;padding:12px 14px}
+  .mark .chip{margin:0 0 6px}
+  .mark p{margin:0;color:var(--ink-dim);font-size:15px;line-height:1.5}
+
+  /* команды бота */
+  .cmds{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px;margin:18px 0}
+  .cmd{border:1px solid var(--line-soft);background:var(--deep);border-radius:8px;padding:12px 14px}
+  .cmd code{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--rust-bright);margin-bottom:4px}
+  .cmd p{margin:0;color:var(--ink-dim);font-size:15px;line-height:1.5}
+
+  /* оговорка */
+  .note{display:flex;gap:14px;align-items:flex-start;border:1px solid rgba(217,176,74,.3);background:rgba(217,176,74,.06);
+    border-radius:8px;padding:16px 18px;margin:0 0 6px}
+  .note svg{flex:none;margin-top:2px}
+  .note p{margin:0;color:var(--ink)}
+  .note p + p{margin-top:6px;color:var(--ink-dim);font-size:15px}
+
+  /* дорожная карта */
+  .road{list-style:none;margin:18px 0 0;padding:0;position:relative}
+  .road::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--rust),var(--line-soft))}
+  .road li{position:relative;padding:0 0 18px 34px}
+  .road li::before{content:"";position:absolute;left:1px;top:6px;width:14px;height:14px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--rust)}
+  .road li.next::before{background:var(--rust)}
+  .road b{font-family:"Oswald",sans-serif;font-weight:600;font-size:19px;letter-spacing:.02em;color:var(--ink)}
+  .road span{display:block;color:var(--ink-dim);font-size:15px}
+
+  /* донат */
+  .donate{position:relative;margin:10px 0 0;border-radius:14px;padding:1px;
+    background:linear-gradient(135deg,rgba(238,154,60,.75),rgba(58,63,45,.6) 45%,rgba(159,186,90,.45))}
+  .donate .in{border-radius:13px;padding:36px 32px;
+    background:radial-gradient(600px 240px at 100% 0%,rgba(210,131,46,.14),transparent 70%),linear-gradient(180deg,#20241A,#181B12)}
+  @media(max-width:560px){.donate .in{padding:28px 20px}}
+  .donate .kicker{color:var(--geiger)}
+  .donate h2{font-size:clamp(28px,4.6vw,40px);margin-bottom:12px}
+  .donate h2 .hl{color:var(--rust-bright)}
+  .donate .lead{color:var(--ink-dim);max-width:60ch;margin:0 0 24px}
+  .costs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 26px}
+  @media(max-width:700px){.costs{grid-template-columns:1fr}}
+  .cost{border:1px solid var(--line-soft);background:rgba(12,14,8,.55);border-radius:10px;padding:14px 16px}
+  .cost svg{display:block;margin-bottom:10px}
+  .cost b{display:block;font-family:"Oswald",sans-serif;font-weight:600;font-size:17px;letter-spacing:.02em;margin-bottom:2px}
+  .cost span{color:var(--ink-dim);font-size:14.5px;line-height:1.45}
+  .promise{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 26px;font-family:"JetBrains Mono",monospace;font-size:12px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+  .promise span::before{content:"✓ ";color:var(--geiger)}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  a.btn{text-decoration:none;font-family:"Oswald",sans-serif;font-weight:600;font-size:17px;letter-spacing:.03em;
+    padding:13px 24px;border-radius:6px;display:inline-flex;align-items:center;gap:10px;transition:.15s ease}
+  a.btn.primary{background:var(--rust);color:#15150C;box-shadow:0 8px 28px rgba(210,131,46,.28)}
+  a.btn.primary:hover{background:var(--rust-bright);transform:translateY(-1px)}
+  a.btn.ghost{color:var(--ink);border:1px solid var(--line)}
+  a.btn.ghost:hover{border-color:var(--rust);color:var(--rust-bright)}
+  .thanks{margin:18px 0 0;color:var(--ink-faint);font-size:14px}
+  .invite{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin:22px 0 0;
+    padding:18px 20px;border-radius:10px;border:1px solid rgba(88,101,242,.45);
+    background:radial-gradient(420px 160px at 100% 50%,rgba(88,101,242,.18),transparent 70%),var(--panel)}
+  .invite b{display:block;font-family:"Oswald",sans-serif;font-weight:600;font-size:19px;letter-spacing:.02em;margin-bottom:2px}
+  .invite span{display:block;color:var(--ink-dim);font-size:15px;max-width:52ch}
+  a.btn.discord{background:#5865F2;color:#fff;font-size:18px;padding:14px 26px;box-shadow:0 8px 26px rgba(88,101,242,.35)}
+  a.btn.discord:hover{background:#6b76f5;transform:translateY(-1px)}
+
+  footer.foot{border-top:1px solid var(--line-soft);margin-top:46px;padding:26px 0 60px}
+  footer.foot .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;font-family:"JetBrains Mono",monospace;
+    font-size:12px;letter-spacing:.1em;color:var(--ink-faint)}
+  footer.foot a{color:var(--ink-dim);text-decoration:none}
+  footer.foot a:hover{color:var(--rust)}
+  footer.foot .right{margin-left:auto}
+  /* ---------- #06: сцены 3D, макеты, журнал ---------- */
+  .shot{margin:22px 0 8px;border:1px solid var(--line-soft);border-radius:12px;overflow:hidden;background:var(--deep)}
+  .shot img{display:block;width:100%;height:auto}
+  .pair{display:grid;grid-template-columns:1.25fr 1fr;gap:12px;margin:22px 0 8px}
+  @media(max-width:700px){.pair{grid-template-columns:1fr}}
+  .pair .shot{margin:0}
+  .figures{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+  @media(max-width:640px){.figures{grid-template-columns:1fr}}
+  .fig{border:1px solid var(--line-soft);border-radius:10px;padding:14px 16px;background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+  .fig .v{font-family:"Oswald",sans-serif;font-weight:600;font-size:30px;line-height:1;color:var(--ink)}
+  .fig .v s{color:var(--ink-faint);font-size:20px;margin-right:8px;text-decoration-thickness:2px}
+  .fig .k{margin-top:6px;color:var(--ink-dim);font-size:14px;line-height:1.45}
+  .wip{display:flex;gap:12px;align-items:flex-start;margin:18px 0 0;padding:14px 16px;border-radius:10px;
+    border:1px dashed rgba(217,176,74,.45);background:rgba(217,176,74,.06);color:var(--ink-dim);font-size:15px}
+  .wip b{color:var(--warn)}
+  .wip svg{flex:none;margin-top:3px}
+
+  /* макет экрана проверки */
+  .mock{margin:22px 0 8px;border:1px solid var(--line);border-radius:12px;background:var(--deep);padding:10px;
+    display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:10px;font-size:13px}
+  @media(max-width:720px){.mock{grid-template-columns:1fr}}
+  .mock .scr{position:relative;border-radius:8px;border:1px solid var(--line-soft);min-height:220px;overflow:hidden;
+    background:linear-gradient(90deg,#1b1d17 0 30%,#262821 30%)}
+  .mock .scr i{position:absolute;left:33%;right:3%;height:11px;border-radius:2px;background:rgba(160,156,138,.16)}
+  .mock .scr i.on{outline:1.5px solid var(--rust);background:rgba(210,131,46,.12)}
+  .mock .scr .tag{position:absolute;left:10px;bottom:8px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-faint)}
+  .mock .tbl{border:1px solid var(--line-soft);border-radius:8px;background:var(--panel);overflow:hidden}
+  .mock .tbl .row{display:grid;grid-template-columns:22px 1fr 34px 34px 50px;gap:6px;padding:4px 10px;border-top:1px solid var(--line-soft);
+    font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink)}
+  .mock .tbl .row:first-child{border-top:0;color:var(--ink-faint);font-size:10px;letter-spacing:.12em}
+  .mock .tbl .row span:not(:nth-child(2)){text-align:center}
+  .mock .tbl .row.act{background:rgba(210,131,46,.1)}
+  .mock .tbl .row.man span:nth-child(2){color:var(--geiger)}
+  .mock .tbl .row em{font-style:normal;color:var(--ink-faint);font-size:10px;margin-left:6px}
+  .mock .tbl .foot2{display:flex;gap:10px;align-items:center;white-space:nowrap;font-size:11px!important;padding:6px 10px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-dim)}
+  .mock .tbl .foot2 .r{margin-left:auto}
+  .mock .dl{margin:0 10px 8px 32px;border:1px solid var(--line);border-radius:6px;background:var(--panel-2);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+  .mock .dl div{padding:3px 10px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-dim)}
+  .mock .dl div:first-child{background:rgba(210,131,46,.14);color:var(--ink)}
+
+  /* журнал правок */
+  .log{margin:22px 0 8px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:14px 16px}
+  .log .h{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;color:var(--ink-dim);margin-bottom:8px}
+  .log .h b{color:var(--ink)}
+  .log .h .w{color:var(--warn)}
+  .log ul{margin:0;padding:0;list-style:none;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-dim)}
+  .log li{padding:2px 0}
+  .log li s{color:var(--ink-faint)}
+  .log li .to{color:var(--ink)}
+  .log li.add{color:var(--geiger)}
+  .log li.del{color:var(--danger)}
+
+  /* 3D-сцены: печенька и «ничего не произошло» */
+  .stage{position:relative;margin:24px 0 8px;border:1px solid var(--line-soft);border-radius:14px;overflow:hidden;
+    background:radial-gradient(600px 300px at 50% 60%,rgba(210,131,46,.14),transparent 70%),var(--deep)}
+  .stage canvas{display:block;width:100%;height:100%}
+  .stage.cookie{height:clamp(300px,52vw,440px);cursor:grab}
+  .stage.cookie:active{cursor:grabbing}
+  .stage .hint{position:absolute;left:16px;bottom:12px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint);pointer-events:none}
+  .thanks-card{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0}
+  @media(max-width:640px){.thanks-card{grid-template-columns:1fr}}
+  .thanks-card a{display:block;text-decoration:none;border:1px solid var(--line-soft);border-radius:10px;padding:14px 16px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));transition:.15s ease}
+  .thanks-card a:hover{border-color:var(--rust);transform:translateY(-1px)}
+  .thanks-card b{display:block;font-family:"Oswald",sans-serif;font-weight:600;font-size:19px;color:var(--ink)}
+  .thanks-card span{color:var(--ink-dim);font-size:15px}
+
+  .intel{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px;margin:24px 0 8px}
+  @media(max-width:700px){.intel{grid-template-columns:1fr}}
+  .intel .stage{margin:0}
+  .stage.radar canvas.scope{position:absolute;inset:0;z-index:1}
+  .stage.crate{height:auto;min-height:220px;background:
+    radial-gradient(260px 160px at 50% 70%,rgba(159,186,90,.08),transparent 70%),
+    repeating-linear-gradient(135deg,rgba(217,176,74,.05) 0 10px,transparent 10px 20px),#0a0c07}
+  .stage.crate .hud{position:absolute;inset:12px 14px auto;display:flex;justify-content:space-between;z-index:2;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+  .stage.crate .hud b{color:var(--warn);font-weight:500}
+  .stage.crate .bottom{position:absolute;left:14px;right:14px;bottom:10px;z-index:2;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  .stage.radar{height:clamp(280px,46vw,400px);background:
+    radial-gradient(circle at 50% 50%,rgba(159,186,90,.10),transparent 62%),
+    linear-gradient(rgba(159,186,90,.05) 1px,transparent 1px) 0 0/40px 40px,
+    linear-gradient(90deg,rgba(159,186,90,.05) 1px,transparent 1px) 0 0/40px 40px,
+    #070905}
+
+  .stage.radar .hud{position:absolute;inset:14px 16px auto;display:flex;justify-content:space-between;z-index:2;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(159,186,90,.85)}
+  .stage.radar .hud i{font-style:normal;color:var(--ink-faint)}
+  .stage.radar .blink{animation:blink 1.1s steps(1) infinite}
+  .stage.radar .bottom{position:absolute;left:16px;right:16px;bottom:12px;z-index:2;display:flex;justify-content:space-between;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  .quiet{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-faint);letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <div class="wrap">
+      <a class="back" href="/">←&nbsp;на главную</a>
+      <span class="sep">//</span>
+      <span class="marker">
+        <span class="dot" aria-hidden="true"></span>
+        <span>SCWA</span><span class="sep">//</span><span>devlog</span>
+      </span>
+      <span class="right">обновления сервиса</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">
+        <span class="num">#06</span><span>Карты · Проверка скринов · Журнал правок</span>
+        <span class="cursor" aria-hidden="true"></span>
+      </div>
+      <h1>Под Малой Бердовкой <span class="hl">ничего не произошло</span></h1>
+      <p class="lede">Короткий выпуск между большими. Никаких революций — мы доводим до ума то, чем кланы пользуются каждый вечер КВ: карты арен, экран проверки скриншота и прозрачность правок. И благодарим тех, без кого половины сервиса бы не было.</p>
+      <div class="meta">
+        <span><b>28.09.2026</b></span>
+        <span>после #05 от 24.09</span>
+        <span>~4 минуты</span>
+        <span class="beta">работа продолжается</span>
+      </div>
+
+      <nav class="tldr" aria-label="Коротко">
+        <a href="#maps"><span class="n">01</span><b>Карты пересобраны</b><span>Честный рельеф, текстуры игры и кеш нескольких игроков сразу.</span></a>
+        <a href="#review"><span class="n">02</span><b>Проверка скрина</b><span>Скрин во всю ширину, пропавшего игрока — одним кликом из состава.</span></a>
+        <a href="#log"><span class="n">03</span><b>Журнал правок</b><span>Офицеры видят, кто и что менял в каждом бою.</span></a>
+        <a href="#nothing"><span class="n">04</span><b>Ничего не произошло</b><span>Совсем ничего. Правда. Можно не открывать.</span></a>
+      </nav>
+    </header>
+
+    <!-- ===== 01 КАРТЫ ===== -->
+    <section class="block" id="maps">
+      <p class="kicker"><span class="idx">01</span> карты арен <span class="tag new">в работе</span></p>
+      <h2>Карты пересобраны — и стали легче</h2>
+      <p>3D-карты для планировщика теперь собираются новым экспортёром — и в ближайшем обновлении переезжают в планировщик. Рельеф сглажен так же, как в игре, блоки берут настоящие текстуры и соединяются по тем же правилам, что в клиенте, а арена режется на квадраты 256×256, которые подгружаются по очереди — от центра к краям.</p>
+
+      <div class="pair">
+        <div class="shot"><img src="assets/devlog-06/hvoiny_overview.jpg" alt="Хвойник целиком: новая 3D-сборка арены" loading="lazy"></div>
+        <div class="shot"><img src="assets/devlog-06/hvoiny_close.jpg" alt="Хвойник вблизи: дома, дворы и рельеф" loading="lazy"></div>
+      </div>
+      <p class="caption">Хвойник в новой сборке — целиком и вблизи.</p>
+
+      <p>Карты строятся из кеша, который игра сохраняет, пока вы бегаете по локации, — а он у каждого свой и всегда неполный. Поэтому теперь мы сливаем кеш от нескольких игроков чанк за чанком: из двух копий берём ту, где больше блоков. Только Хвойнику это добавило 731 чанк сверх прежней сборки — целые кварталы, которые раньше обрывались.</p>
+
+      <p>В основе — открытый экспортёр карт <a href="https://github.com/DeTTK/SC_Map_Dump" target="_blank" rel="noopener" style="color:var(--rust-bright)">DeTTK/SC_Map_Dump</a> от создателей stalhub. Если хочется самим покопаться в данных карт — начинать стоит с него.</p>
+
+      <div class="figures">
+        <div class="fig"><div class="v">15</div><div class="k">квадратов 256×256 у Хвойника, грузятся от центра к краям</div></div>
+        <div class="fig"><div class="v"><s>3112</s>411</div><div class="k">текстур на видеокарте: тайлы больше не грузят по своей копии</div></div>
+        <div class="fig"><div class="v">+731</div><div class="k">чанк Хвойника после слияния кешей двух игроков</div></div>
+      </div>
+
+      <div class="wip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D9B04A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span><b>Работа ещё идёт.</b> Новые карты подробнее прежних и пока тяжелее — ужмём их позже. По краям Хвойника и Малой Бердовки не хватает кусков — туда пока никто не забегал с включённым кешем. Соберём недостающее, перерендерим и обновим карты без отдельного анонса. На плане это не мешает: центр арен собран целиком.</span>
+      </div>
+    </section>
+
+    <!-- ===== 02 ПРОВЕРКА ===== -->
+    <section class="block" id="review">
+      <p class="kicker"><span class="idx">02</span> проверка скриншота <span class="tag new">новое</span></p>
+      <h2>Скрин — во всю ширину, игроки — из состава</h2>
+      <p>Экран проверки перестроен. Скриншот прижат к левому краю и занимает всё свободное место, распознанный список — справа узкой колонкой. На широком мониторе сводку КВ теперь видно целиком и крупно, без приближения.</p>
+
+      <div class="mock" aria-label="Схема экрана проверки">
+        <div class="scr">
+          <i style="top:22px"></i><i style="top:40px" class="on"></i><i style="top:58px"></i><i style="top:76px"></i>
+          <i style="top:94px"></i><i style="top:112px"></i><i style="top:130px"></i><i style="top:148px"></i><i style="top:166px"></i>
+          <span class="tag">скриншот · колесо — приблизить</span>
+        </div>
+        <div class="tbl">
+          <div class="row"><span>#</span><span>ИГРОК</span><span>У</span><span>С</span><span>СЧЁТ</span></div>
+          <div class="row"><span>1</span><span>Strelok_77</span><span>30</span><span>19</span><span>8735</span></div>
+          <div class="row act"><span>2</span><span>Kovalsky</span><span>24</span><span>13</span><span>8260</span></div>
+          <div class="row"><span>3</span><span>Ghost_Ural</span><span>21</span><span>11</span><span>8185</span></div>
+          <div class="row man"><span>4</span><span>Tihi<em>вручную</em></span><span>—</span><span>—</span><span>—</span></div>
+          <div class="dl"><div>Tihiy</div><div>Tishina_88</div><div>Tiger_off</div></div>
+          <div class="foot2"><span>+ Добавить игрока</span><span>не на скрине: 3</span><span class="r">↻ Обновить состав</span></div>
+        </div>
+      </div>
+      <p class="caption">Схема: строка, выбранная в таблице, подсвечена на скрине; ник подсказывается из состава.</p>
+
+      <ul class="list">
+        <li><b>Добавить игрока</b> — если строка не попала в кадр или распознавание её пропустило. Новая строка помечается «вручную».</li>
+        <li><b>Подсказка из состава</b> — в поле ника всплывают бойцы клана, которых ещё нет в таблице. Стёрли ник целиком — список тоже появится.</li>
+        <li><b>Обновить состав</b> — если игрок вступил только что. Сервис перечитает состав клана из игры сам; личный вход через EXBO для этого не нужен.</li>
+      </ul>
+    </section>
+
+    <!-- ===== 03 ЖУРНАЛ ===== -->
+    <section class="block" id="log">
+      <p class="kicker"><span class="idx">03</span> прозрачность <span class="tag new">новое</span></p>
+      <h2>Журнал правок</h2>
+      <p>Скрин можно поправить при подтверждении и позже из истории — и это правильно: распознавание ошибается. Но статистика клана — общая, и честность здесь важнее удобства. Поэтому каждая правка теперь записывается.</p>
+
+      <div class="log" aria-label="Пример записи журнала">
+        <div class="h"><b>Kovalsky</b><span>28.09 · 20:41</span><span class="w">правка из истории</span><span>бой против «Eternal Frost»</span></div>
+        <ul>
+          <li>#7 Ghost_Ural, счёт: <s>6250</s> → <span class="to">6520</span></li>
+          <li>Очки противника: <s>382</s> → <span class="to">328</span></li>
+          <li class="add">+ Tihiy (вручную) 9 / 7 / 6 / 4219</li>
+          <li class="del">− Strelok_77_ (вычеркнут)</li>
+        </ul>
+      </div>
+      <p class="caption">Условный пример записи.</p>
+
+      <ul class="list">
+        <li><b>При подтверждении</b> запись показывает, чем итог отличается от распознанного. Что осталось как было, в журнал не попадает.</li>
+        <li><b>При правке из истории</b> — чем новое отличается от сохранённого, кто и когда это сделал.</li>
+        <li><b>Кто видит</b> — офицеры и выше: в карточке боя и целиком в «История → Бои → Управление → Журнал правок».</li>
+      </ul>
+    </section>
+
+    <!-- ===== 04 СПАСИБО ===== -->
+    <section class="block" id="thanks">
+      <p class="kicker"><span class="idx">04</span> спасибо</p>
+      <h2>oarer — <span class="hl">и одна очень круглая благодарность</span></h2>
+      <p>Половина того, что SCWA знает о предметах, пришла от <b>oarer</b>. База предметов с разобранными характеристиками и допстатами артефактов, математика калькулятора сборок — всё это его открытая работа. Без неё редактора снаряжения в нынешнем виде просто не было бы.</p>
+
+      <div class="stage cookie" id="cookie" aria-label="Крутящаяся печенька — благодарность oarer">
+        <span class="hint">потяните, чтобы покрутить</span>
+      </div>
+
+      <p>Спасибо словами мы уже говорили. Поэтому теперь в разделе карт, в углу планировщика, крутится печенька. Наведите на неё — и она скажет спасибо проекту <b>stalhub.dev</b> целиком.</p>
+
+      <div class="thanks-card">
+        <a href="https://stalhub.dev" target="_blank" rel="noopener"><b>stalhub.dev</b><span>Проект целиком: данные, исследования, вдохновение.</span></a>
+        <a href="https://github.com/oarer/sc-db" target="_blank" rel="noopener"><b>oarer/sc-db</b><span>Открытая база предметов, на которой стоит наш редактор сборок.</span></a>
+      </div>
+    </section>
+
+    <!-- ===== ..... ===== -->
+    <section class="block" id="nothing">
+      <p class="kicker"><span class="idx">05</span> прочее</p>
+      <h2>Под Малой Бердовкой ничего не произошло</h2>
+      <p class="quiet">Совсем ничего. Радар чистый, в небе над ареной тихо. Проходите, не задерживайтесь.</p>
+
+      <div class="intel">
+        <div class="stage radar" id="radar" aria-label="Радар. Ничего особенного.">
+          <canvas class="scope"></canvas>
+          <div class="hud"><span>РЛС · сектор М-БЕРД.</span><span class="blink">● контакты: <i id="radar-n">—</i></span></div>
+          <div class="bottom"><span>тип: <i>не опознан</i></span><span>статус: ничего не произошло</span></div>
+        </div>
+        <div class="stage crate" id="crate" aria-label="Объект 01">
+          <div class="hud"><span>объект 01</span></div>
+        </div>
+      </div>
+      <p class="caption">Помехи. Не обращайте внимания.</p>
+    </section>
+
+    <!-- ===== ДОНАТ ===== -->
+
+    <section class="block" style="border-top:0;padding-top:10px">
+      <div class="donate">
+        <div class="in">
+          <p class="kicker">поддержать проект</p>
+          <h2>SCWA бесплатный — <span class="hl">и останется таким</span></h2>
+          <p class="lead">Всё из этого выпуска доступно всем кланам без подписок и ограничений. Но у сервиса есть реальные расходы, и если он помогает вашему клану, вы можете поддержать разработку.</p>
+          <div class="costs">
+            <div class="cost">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EE9A3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>
+              <b>Сайт и бот</b><span>Работают круглосуточно, а история вашего клана хранится без срока.</span>
+            </div>
+            <div class="cost">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EE9A3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+              <b>Распознавание</b><span>Скриншоты разбираются на видеокарте — быстро и точно.</span>
+            </div>
+            <div class="cost">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EE9A3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12 18 6"/><circle cx="12" cy="12" r="1.5"/></svg>
+              <b>Сканер</b><span>Сотни профилей каждый вечер КВ и каждую ночь.</span>
+            </div>
+          </div>
+          <div class="promise"><span>любая сумма</span><span>разово</span><span>никаких преимуществ</span></div>
+          <div class="actions">
+            <a class="btn primary" href="https://scwa.ru/support-me">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>
+              Поддержать разработку
+            </a>
+            <a class="btn ghost" href="https://scwa.ru/">Рассказать своему клану</a>
+          </div>
+          <p class="thanks">Донат не влияет на доступ к функциям — он только ускоряет выход обновлений. Спасибо, что играете с нами.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span>SCWA · DEVLOG&nbsp;#06</span>
+      <a href="https://scwa.ru/">scwa.ru</a>
+      <span class="right">© 2026 SCWA</span>
+    </div>
+  </footer>
+
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// Общая обвязка: рендерер в контейнере, рендер только пока сцена на экране.
+function makeStage(el, fov = 30) {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2))
+  renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  el.prepend(renderer.domElement)
+  const scene = new THREE.Scene()
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  const camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 100)
+  const fit = () => {
+    const w = el.clientWidth, h = el.clientHeight
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix()
+  }
+  fit(); new ResizeObserver(fit).observe(el)
+  let visible = false
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { rootMargin: '100px' }).observe(el)
+  const clock = new THREE.Clock()
+  const loop = (tick) => renderer.setAnimationLoop(() => {
+    const dt = Math.min(0.05, clock.getDelta())
+    if (!visible || document.hidden) return
+    tick(dt); renderer.render(scene, camera)
+  })
+  return { renderer, scene, camera, loop }
+}
+
+/* ───────── Печенька (та же, что в углу планировщика, только большая) ───────── */
+function noiseCanvas(size, base, spread) {
+  const c = document.createElement('canvas'); c.width = c.height = size
+  const g = c.getContext('2d'), img = g.createImageData(size, size)
+  for (let i = 0; i < img.data.length; i += 4) {
+    const n = (Math.random() - 0.5) * spread
+    img.data[i] = base[0] + n; img.data[i + 1] = base[1] + n * 0.8; img.data[i + 2] = base[2] + n * 0.6; img.data[i + 3] = 255
+  }
+  g.putImageData(img, 0, 0); return c
+}
+function embossCanvas() {
+  const S = 1024, c = document.createElement('canvas'); c.width = c.height = S
+  const g = c.getContext('2d')
+  g.fillStyle = '#000'; g.fillRect(0, 0, S, S); g.translate(S / 2, S / 2)
+  g.filter = 'blur(3px)'; g.strokeStyle = '#fff'; g.fillStyle = '#fff'
+  g.lineWidth = 22; g.beginPath(); g.arc(0, 0, S * 0.47, 0, Math.PI * 2); g.stroke()
+  g.lineWidth = 10; g.beginPath(); g.arc(0, 0, S * 0.3, 0, Math.PI * 2); g.stroke()
+  for (let k = 0; k < 12; k++) {
+    const a = (k / 12) * Math.PI * 2
+    g.save(); g.rotate(a); g.translate(0, -S * 0.385)
+    for (let p = 0; p < 4; p++) { g.save(); g.rotate((p * Math.PI) / 2 + Math.PI / 4); g.beginPath(); g.ellipse(0, -22, 13, 24, 0, 0, Math.PI * 2); g.fill(); g.restore() }
+    g.restore()
+    g.save(); g.rotate(a + Math.PI / 12); g.beginPath(); g.arc(0, -S * 0.385, 9, 0, Math.PI * 2); g.fill(); g.restore()
+  }
+  g.font = `900 ${S * 0.15}px "Arial Black", Arial, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'
+  g.fillText('SCWA', 0, 6)
+  return c
+}
+function waferGeometry() {
+  const geo = new THREE.CylinderGeometry(1, 1, 0.24, 220, 3), pos = geo.attributes.position, v = new THREE.Vector3()
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i)
+    if (Math.hypot(v.x, v.z) > 0.98) {
+      const k = 1 + 0.018 * Math.cos(Math.atan2(v.z, v.x) * 90)
+      v.x *= k; v.z *= k
+      if (Math.abs(v.y) > 0.11) { v.x *= 0.985; v.z *= 0.985 }
+      pos.setXYZ(i, v.x, v.y, v.z)
+    }
+  }
+  geo.computeVertexNormals(); return geo
+}
+function cookieScene(el) {
+  const { scene, camera, loop, renderer } = makeStage(el)
+  camera.position.set(0, 0, 5.6)
+  const key = new THREE.DirectionalLight(0xfff1e0, 2.4); key.position.set(2, 3, 4); scene.add(key)
+  const rim = new THREE.DirectionalLight(0xffb070, 1.2); rim.position.set(-3, -1, -2); scene.add(rim)
+  const tex = (c, srgb) => { const t = new THREE.CanvasTexture(c); if (srgb) t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t }
+  const cocoa = tex(noiseCanvas(256, [44, 28, 22], 18), true)
+  const crumbs = tex(noiseCanvas(256, [128, 128, 128], 120), false)
+  const side = new THREE.MeshStandardMaterial({ map: cocoa, roughness: 0.85, bumpMap: crumbs, bumpScale: 0.6 })
+  const cap = new THREE.MeshStandardMaterial({ map: cocoa, roughness: 0.8, bumpMap: tex(embossCanvas(), false), bumpScale: 3 })
+  const cream = new THREE.MeshStandardMaterial({ map: tex(noiseCanvas(128, [240, 234, 222], 10), true), roughness: 0.55, bumpMap: crumbs, bumpScale: 0.15 })
+  const wafer = waferGeometry(), cookie = new THREE.Group()
+  const top = new THREE.Mesh(wafer, [side, cap, cap]); top.position.y = 0.2
+  const bottom = new THREE.Mesh(wafer, [side, cap, cap]); bottom.position.y = -0.2
+  cookie.add(top, bottom, new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.18, 128), cream))
+  cookie.rotation.x = 1.1; scene.add(cookie)
+  // Потянуть — покрутить; отпустили — докручивается по инерции и возвращается к своему вращению.
+  let drag = null, vx = 0, vy = 0
+  el.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY }; el.setPointerCapture(e.pointerId) })
+  el.addEventListener('pointermove', (e) => {
+    if (!drag) return
+    vy = (e.clientX - drag.x) * 0.012; vx = (e.clientY - drag.y) * 0.012
+    cookie.rotation.y += vy; cookie.rotation.x += vx; drag = { x: e.clientX, y: e.clientY }
+  })
+  el.addEventListener('pointerup', () => { drag = null })
+  const speed = reduce ? 0.15 : 1
+  loop((dt) => {
+    if (!drag) {
+      vx *= 0.94; vy *= 0.94
+      cookie.rotation.y += vy + dt * 0.9 * speed; cookie.rotation.x += vx + dt * 0.37 * speed; cookie.rotation.z += dt * 0.21 * speed
+    }
+  })
+}
+
+/* ───────── Ничего не произошло ───────── */
+// Радар — 2D: развертка вращается, контакты вспыхивают силуэтом, когда луч
+// проходит по ним, и гаснут к следующему обороту.
+function radarScene(el) {
+  const cv = el.querySelector('canvas.scope'), g = cv.getContext('2d')
+  let W = 0, H = 0, R = 0
+  const fit = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2)
+    W = el.clientWidth; H = el.clientHeight; R = Math.min(W, H) * 0.44
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'
+    g.setTransform(dpr, 0, 0, dpr, 0, 0)
+  }
+  fit(); new ResizeObserver(fit).observe(el)
+  let visible = false
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting }).observe(el)
+
+  // контакты: полярные координаты (доля радиуса), курс, скорость, тип
+  const rnd = (a, b) => a + Math.random() * (b - a)
+  const spawn = (kind) => ({ kind, a: rnd(0, Math.PI * 2), r: rnd(0.25, 0.9), hdg: rnd(0, Math.PI * 2),
+    v: kind === 'missile' ? rnd(0.05, 0.09) : rnd(0.012, 0.025), glow: 0 })
+  const contacts = [spawn('jet'), spawn('jet'), spawn('jet'), spawn('missile'), spawn('missile')]
+  document.getElementById('radar-n').textContent = contacts.length
+
+  const JET = [[0, -1], [0.14, -0.35], [0.95, 0.25], [0.95, 0.38], [0.16, 0.2], [0.12, 0.62], [0.42, 0.92], [0.42, 1],
+    [0, 0.88], [-0.42, 1], [-0.42, 0.92], [-0.12, 0.62], [-0.16, 0.2], [-0.95, 0.38], [-0.95, 0.25], [-0.14, -0.35]]
+  const MSL = [[0, -1], [0.07, -0.75], [0.07, 0.6], [0.28, 1], [-0.28, 1], [-0.07, 0.6], [-0.07, -0.75]]
+  const shape = (pts, x, y, hdg, size, a) => {
+    g.save(); g.translate(x, y); g.rotate(hdg); g.scale(size, size)
+    g.beginPath(); pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py))); g.closePath()
+    g.fillStyle = `rgba(190,220,120,${a})`; g.shadowColor = 'rgba(190,220,120,.9)'; g.shadowBlur = 12 * a
+    g.fill(); g.restore()
+  }
+
+  const SPEED = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.25 : 1.4 // рад/с
+  let sweep = 0, last = performance.now()
+  const frame = (now) => {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now
+    requestAnimationFrame(frame)
+    if (!visible || document.hidden) return
+    const prev = sweep
+    sweep = (sweep + dt * SPEED) % (Math.PI * 2)
+    const cx = W / 2, cy = H / 2
+    g.clearRect(0, 0, W, H)
+    // кольца и перекрестие
+    g.strokeStyle = 'rgba(159,186,90,.16)'; g.lineWidth = 1
+    for (let k = 1; k <= 4; k++) { g.beginPath(); g.arc(cx, cy, (R * k) / 4, 0, Math.PI * 2); g.stroke() }
+    g.beginPath(); g.moveTo(cx - R, cy); g.lineTo(cx + R, cy); g.moveTo(cx, cy - R); g.lineTo(cx, cy + R); g.stroke()
+    // хвост развертки
+    for (let i = 0; i < 40; i++) {
+      const a0 = sweep - (i + 1) * 0.025, a1 = sweep - i * 0.025
+      g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, R, a0, a1); g.closePath()
+      g.fillStyle = `rgba(159,186,90,${0.16 * (1 - i / 40) ** 2})`; g.fill()
+    }
+    g.strokeStyle = 'rgba(200,230,130,.95)'; g.lineWidth = 2
+    g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(sweep) * R, cy + Math.sin(sweep) * R); g.stroke()
+    // контакты
+    for (const c of contacts) {
+      let x = Math.cos(c.a) * c.r, y = Math.sin(c.a) * c.r
+      x += Math.sin(c.hdg) * c.v * dt; y -= Math.cos(c.hdg) * c.v * dt
+      c.r = Math.hypot(x, y); c.a = Math.atan2(y, x)
+      if (c.r > 0.97) Object.assign(c, spawn(c.kind), { r: 0.95 })   // ушёл за край — новый на краю
+      const ca = (c.a + Math.PI * 2) % (Math.PI * 2)
+      const crossed = prev <= sweep ? ca > prev && ca <= sweep : ca > prev || ca <= sweep
+      if (crossed) c.glow = 1
+      c.glow = Math.max(0.12, c.glow - dt * 0.18)
+      if (c.glow > 0.02)
+        shape(c.kind === 'jet' ? JET : MSL, cx + Math.cos(c.a) * c.r * R, cy + Math.sin(c.a) * c.r * R,
+          c.hdg, c.kind === 'jet' ? R * 0.095 : R * 0.05, c.glow)
+    }
+    g.fillStyle = 'rgba(200,230,130,.95)'; g.beginPath(); g.arc(cx, cy, 3, 0, Math.PI * 2); g.fill()
+  }
+  requestAnimationFrame(frame)
+}
+
+// Объект под чехлом: своя маленькая сцена, раскраски не видно — один матовый брезент.
+function crateScene(el) {
+  const { scene, camera, loop } = makeStage(el, 30)
+  const key = new THREE.DirectionalLight(0xfff0d8, 2.6); key.position.set(3, 5, 2); scene.add(key)
+  const rim = new THREE.DirectionalLight(0x9fba5a, 1.1); rim.position.set(-3, 1, -3); scene.add(rim)
+  const c = document.createElement('canvas'); c.width = c.height = 128
+  const cg = c.getContext('2d'), img = cg.createImageData(128, 128)
+  for (let i = 0; i < img.data.length; i += 4) {
+    const n = Math.random() * 40 + ((i / 4) % 128 % 4 < 2 ? 18 : 0)   // рогожка
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = 110 + n; img.data[i + 3] = 255
+  }
+  cg.putImageData(img, 0, 0)
+  const weave = new THREE.CanvasTexture(c); weave.wrapS = weave.wrapT = THREE.RepeatWrapping; weave.repeat.set(12, 12)
+  const tarp = new THREE.MeshStandardMaterial({ color: 0x4a4f36, roughness: 1, metalness: 0, bumpMap: weave, bumpScale: 1.5 })
+  const pivot = new THREE.Group(); scene.add(pivot)
+  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load('assets/devlog-06/object-01.glb', (gltf) => {
+    const obj = gltf.scene
+    obj.traverse((o) => { if (o.isMesh) o.material = tarp })
+    const box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3())
+    obj.position.sub(box.getCenter(new THREE.Vector3()))
+    pivot.scale.setScalar(2.3 / Math.max(size.x, size.y, size.z)); pivot.add(obj)
+  })
+  camera.position.set(0, 2.6, 5.2); camera.lookAt(0, -0.1, 0)
+  let t = 0
+  loop((dt) => { t += dt * (reduce ? 0.2 : 1); pivot.rotation.y = t * 0.35 })
+}
+
+for (const [id, fn] of [['cookie', cookieScene], ['radar', radarScene], ['crate', crateScene]]) {
+  const el = document.getElementById(id)
+  if (!el) continue
+  try { fn(el) } catch (e) { console.warn(id, e) }
+}
+</script>
+</body>
+</html>
