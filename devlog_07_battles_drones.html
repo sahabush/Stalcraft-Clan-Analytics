@@ -211,6 +211,29 @@
   @media(max-width:640px){.fleet td:last-child{display:none}.fleet th:last-child{display:none}}
   .snow{margin:22px 0 8px;border:1px solid var(--line-soft);border-radius:12px;overflow:hidden;max-width:620px}
   .snow img{display:block;width:100%;height:auto}
+  /* просмотр картинок: клик — на весь экран, там клик/колесо — приблизить, стрелки — листать */
+  .shot img,.snow img{cursor:zoom-in}
+  .lb{position:fixed;inset:0;z-index:100;display:none;background:rgba(8,9,6,.94);backdrop-filter:blur(3px);
+    touch-action:none;user-select:none}
+  .lb.on{display:block}
+  .lb .view{position:absolute;inset:56px 16px 64px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .lb img{max-width:100%;max-height:100%;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.6);cursor:zoom-in;
+    transform-origin:0 0;will-change:transform}
+  .lb.zoomed img{cursor:grab;border-radius:0}
+  .lb.zoomed.drag img{cursor:grabbing}
+  .lb .bar{position:absolute;left:0;right:0;top:0;height:56px;display:flex;align-items:center;gap:14px;padding:0 72px 0 18px;
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  .lb .bar b{color:var(--rust);font-weight:500}
+  .lb .bar .hint{margin-left:auto}
+  @media(max-width:640px){.lb .bar .hint{display:none}}
+  .lb .cap{position:absolute;left:16px;right:16px;bottom:0;height:64px;display:flex;align-items:center;justify-content:center;
+    text-align:center;color:var(--ink-dim);font-size:14px}
+  .lb button{position:absolute;top:50%;translate:0 -50%;width:44px;height:64px;border:1px solid var(--line);border-radius:8px;
+    background:rgba(29,32,22,.85);color:var(--ink);font-size:22px;cursor:pointer;z-index:2}
+  .lb button:hover{border-color:var(--rust);color:var(--rust-bright)}
+  .lb button.prev{left:16px}.lb button.next{right:16px}
+  .lb button.close{top:28px;right:16px;translate:0 -50%;width:40px;height:36px;font-size:18px}
+  @media(max-width:640px){.lb button.prev,.lb button.next{display:none}}
 </style>
 </head>
 <body>
@@ -429,6 +452,99 @@
       <span class="right">© 2026 SCWA</span>
     </div>
   </footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Просмотр картинки">
+  <div class="bar"><b id="lb-n"></b><span class="hint">клик или колесо — приблизить · ← → — листать · Esc — закрыть</span></div>
+  <div class="view" id="lb-view"><img id="lb-img" alt=""></div>
+  <div class="cap" id="lb-cap"></div>
+  <button class="prev" id="lb-prev" aria-label="Предыдущая">‹</button>
+  <button class="next" id="lb-next" aria-label="Следующая">›</button>
+  <button class="close" id="lb-close" aria-label="Закрыть">✕</button>
+</div>
+<script>
+// Просмотр картинок выпуска: клик по кадру — на весь экран; клик/колесо/щипок — приблизить к точке,
+// перетаскивание — двигать; ← → — соседние кадры, Esc или клик мимо — закрыть.
+(() => {
+  const imgs = [...document.querySelectorAll('.shot img, .snow img')]
+  const lb = document.getElementById('lb'), view = document.getElementById('lb-view'), img = document.getElementById('lb-img')
+  const cap = document.getElementById('lb-cap'), num = document.getElementById('lb-n')
+  let i = 0, k = 1, x = 0, y = 0, drag = null, moved = false, onImg = false
+  const pts = new Map()
+  let pinch = null
+  const apply = () => {
+    img.style.transform = `translate(${x}px,${y}px) scale(${k})`
+    lb.classList.toggle('zoomed', k > 1.01)
+  }
+  // держать картинку в пределах окна: при приближении край не уходит внутрь
+  const clamp = () => {
+    const w = img.offsetWidth * k, h = img.offsetHeight * k, vw = view.clientWidth, vh = view.clientHeight
+    const ox = img.offsetLeft, oy = img.offsetTop
+    x = w <= vw ? (vw - w) / 2 - ox : Math.min(-ox, Math.max(vw - w - ox, x))
+    y = h <= vh ? (vh - h) / 2 - oy : Math.min(-oy, Math.max(vh - h - oy, y))
+  }
+  const zoomAt = (nk, cx, cy) => {
+    nk = Math.max(1, Math.min(5, nk))
+    const r = view.getBoundingClientRect(), px = cx - r.left - img.offsetLeft, py = cy - r.top - img.offsetTop
+    x = px - (px - x) * nk / k; y = py - (py - y) * nk / k; k = nk
+    if (k <= 1.01) { k = 1; x = 0; y = 0 } else clamp()
+    apply()
+  }
+  const show = (n) => {
+    i = (n + imgs.length) % imgs.length
+    const src = imgs[i]
+    img.src = src.currentSrc || src.src; img.alt = src.alt
+    const fig = src.closest('.shot, .snow, .pair')
+    let c = fig && fig.nextElementSibling
+    cap.textContent = c && c.classList.contains('caption') ? c.textContent : src.alt
+    num.textContent = `${String(i + 1).padStart(2, '0')} / ${String(imgs.length).padStart(2, '0')}`
+    k = 1; x = 0; y = 0; apply()
+  }
+  const open = (n) => { show(n); lb.classList.add('on'); document.body.style.overflow = 'hidden' }
+  const close = () => { lb.classList.remove('on'); document.body.style.overflow = '' }
+  imgs.forEach((im, n) => im.addEventListener('click', () => open(n)))
+  document.getElementById('lb-prev').onclick = () => show(i - 1)
+  document.getElementById('lb-next').onclick = () => show(i + 1)
+  document.getElementById('lb-close').onclick = close
+  addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('on')) return
+    if (e.key === 'Escape') close()
+    else if (e.key === 'ArrowLeft') show(i - 1)
+    else if (e.key === 'ArrowRight') show(i + 1)
+    else if (e.key === '+' || e.key === '=') zoomAt(k * 1.5, innerWidth / 2, innerHeight / 2)
+    else if (e.key === '-') zoomAt(k / 1.5, innerWidth / 2, innerHeight / 2)
+  })
+  view.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(k * Math.exp(-e.deltaY * 0.0015), e.clientX, e.clientY) }, { passive: false })
+  view.addEventListener('pointerdown', (e) => {
+    if (!pts.size) onImg = e.target === img   // после захвата указателя цель события — view, поэтому запоминаем здесь
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); view.setPointerCapture(e.pointerId); moved = false
+    if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), k } ; drag = null }
+    else drag = { x: e.clientX - x, y: e.clientY - y }
+  })
+  view.addEventListener('pointermove', (e) => {
+    if (!pts.has(e.pointerId)) return
+    const p = pts.get(e.pointerId)
+    if (Math.hypot(e.clientX - p.x, e.clientY - p.y) > 4) moved = true
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (pinch && pts.size === 2) {
+      const [a, b] = [...pts.values()]
+      zoomAt(pinch.k * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2)
+    } else if (drag && k > 1) {
+      lb.classList.add('drag'); x = e.clientX - drag.x; y = e.clientY - drag.y; clamp(); apply()
+    }
+  })
+  const up = (e) => {
+    pts.delete(e.pointerId); lb.classList.remove('drag')
+    if (pts.size < 2) pinch = null
+    if (!pts.size && !moved) {
+      if (onImg) k > 1 ? zoomAt(1, e.clientX, e.clientY) : zoomAt(2.5, e.clientX, e.clientY)   // клик: приблизить / обратно
+      else close()                                                                                         // клик мимо картинки
+    }
+    drag = null
+  }
+  view.addEventListener('pointerup', up); view.addEventListener('pointercancel', up)
+  addEventListener('resize', () => { if (lb.classList.contains('on') && k > 1) { clamp(); apply() } })
+})()
+</script>
 
 </body>
 </html>
