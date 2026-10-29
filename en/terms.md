@@ -54,6 +54,8 @@ We collect only what the Service needs, never sell it and show no ads. Details â
 
 6.1a. You may allow us to keep your uploaded screenshots and the results you confirmed to train the Service's own recognition models (Noos). This is optional, not a condition of using the Service, and can be withdrawn at any time on the upload page â€” your saved copies are then deleted. Kept screenshots are never published or shared; models trained on them belong to the Service.
 
+6.1b. With a linked game character you may send game screenshots on the Noos page and label them yourself (screen type, boxes, categories, text). By sending a screenshot there you agree that it and your labels are used to train the Service's recognition models. We may reject screenshots or labels and limit intake from you; you can delete what you sent at any time, and withdrawing consent (6.1a) deletes these too.
+
 6.2. You must not:
 - upload unlawful content;
 - attempt to hack the Service, bypass its limits or access other clans' data without permission;

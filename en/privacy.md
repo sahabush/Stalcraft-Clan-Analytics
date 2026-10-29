@@ -37,6 +37,7 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 **Game statistics**
 - From screenshots you upload: in-game nicknames and match results (kills, deaths, assists, score). The images themselves are deleted after processing, within 10 minutes at most — unless you allow us to keep them for training (below).
 - **Only with your consent:** a copy of the uploaded screenshot (re-encoded, file metadata removed), the table you checked and confirmed, and the raw recognition result for it — to train our own recognition models (Noos). We ask on your first upload; you can give or withdraw consent at any time with the switch on the upload page.
+- **Screenshots you send on the Noos page** (a linked character is required) are kept with your labels (screen type, boxes, categories, text) for training — sending them there is your consent. Only you and the administrators see them; delete any of them on that page, and withdrawing consent on the upload page deletes them all.
 - From the official STALZONE API: **public profile counters** of members of clans that use the service (for example grenades thrown, kills, deaths, matches played in different modes). This is the same information anyone can see in the game. It is collected during clan wars and once a day otherwise, including for clan members who do not use the service themselves — see section 5.
 
 **What you choose to provide**
