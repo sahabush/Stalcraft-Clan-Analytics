@@ -10,7 +10,7 @@ description: How SCWA handles your data
 > **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a free, fan-made analytics service for STALZONE clans. It is not affiliated with EXBO, STALZONE or Discord.
 > This is the English version for users in the EU/EEA, the UK, the US and elsewhere. The [Russian version](https://docs.scwa.ru/privacy) describes the same practices.
 
-**Last updated: September 24, 2026**
+**Last updated: October 29, 2026**
 
 ---
 
@@ -35,7 +35,8 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 - EXBO sign-in (STALZONE): your game characters, clan name and ID, clan rank, and the clan member list (in-game nicknames). The EXBO access token is stored encrypted.
 
 **Game statistics**
-- From screenshots you upload: in-game nicknames and match results (kills, deaths, assists, score). The images themselves are deleted after processing, within 10 minutes at most.
+- From screenshots you upload: in-game nicknames and match results (kills, deaths, assists, score). The images themselves are deleted after processing, within 10 minutes at most — unless you allow us to keep them for training (below).
+- **Only with your consent:** a copy of the uploaded screenshot (re-encoded, file metadata removed), the table you checked and confirmed, and the raw recognition result for it — to train our own recognition models (Noos). We ask on your first upload; you can give or withdraw consent at any time with the switch on the upload page.
 - From the official STALZONE API: **public profile counters** of members of clans that use the service (for example grenades thrown, kills, deaths, matches played in different modes). This is the same information anyone can see in the game. It is collected during clan wars and once a day otherwise, including for clan members who do not use the service themselves — see section 5.
 
 **What you choose to provide**
@@ -59,6 +60,7 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 | Security: sessions, rate limiting, abuse prevention, admin logs | Legitimate interests (Art. 6(1)(f)) |
 | Donation records and receipts | Legal obligation (Art. 6(1)(c)) |
 | Improving recognition of screenshots (on aggregated data) | Legitimate interests (Art. 6(1)(f)) |
+| Training our recognition models on screenshots you chose to share | Consent (Art. 6(1)(a)), withdrawable at any time |
 
 We make no automated decisions that produce legal or similarly significant effects on you. Statistics are shown to your clan; what the clan does with them is up to the clan.
 
@@ -77,7 +79,7 @@ What you publish yourself (for example a profile set to "everyone") is visible t
 
 ## 7. Where it is stored
 
-Our main servers, where your data is stored and processed, are located in Finland (EU). Screenshot recognition mostly runs on servers in Russia: only the image is sent there, and it is not kept after processing. Donations are processed in Russia by the payment provider. These transfers outside the EU are necessary to provide the features you request — recognising the screenshot you upload, carrying out the donation you make (GDPR Art. 49(1)(b)).
+Our main servers, where your data is stored and processed, are located in Finland (EU). Screenshot recognition runs there too. Donations are processed in Russia by the payment provider. This transfer outside the EU is necessary to carry out the donation you make (GDPR Art. 49(1)(b)).
 
 ## 8. Your rights
 
@@ -99,6 +101,7 @@ Some of this you can do yourself in your account: end sessions on other devices,
 | Data | Kept for |
 |:---|:---|
 | Uploaded screenshots | Until processed (10 minutes at most) |
+| Screenshots kept for training (with consent) | Until you withdraw consent — then deleted right away |
 | Match statistics from screenshots | 90 days, then deleted automatically |
 | Public profile statistics (scanner) | While the clan is connected, or until you ask us to delete it |
 | Account, loadouts, settings, password hash | Until you delete your account |

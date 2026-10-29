@@ -10,7 +10,7 @@ description: Terms of use of the SCWA service
 > **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a free, fan-made analytics service for STALZONE clans.
 > This is the English version of the [Russian Terms of Use](https://docs.scwa.ru/). If the two differ, the Russian version prevails, except where the law of your country gives you stronger rights.
 
-**Last updated: September 24, 2026**
+**Last updated: October 29, 2026**
 
 ---
 
@@ -51,6 +51,8 @@ We collect only what the Service needs, never sell it and show no ads. Details â
 ## 6. What you may and may not do
 
 6.1. You may upload screenshots of clan war results, view and edit your clan's statistics, export them, and share your profile.
+
+6.1a. You may allow us to keep your uploaded screenshots and the results you confirmed to train the Service's own recognition models (Noos). This is optional, not a condition of using the Service, and can be withdrawn at any time on the upload page â€” your saved copies are then deleted. Kept screenshots are never published or shared; models trained on them belong to the Service.
 
 6.2. You must not:
 - upload unlawful content;
