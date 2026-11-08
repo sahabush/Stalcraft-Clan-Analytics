@@ -10,7 +10,7 @@ description: Terms of use of the SCWA service
 > **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a free, fan-made analytics service for STALZONE clans.
 > This is the English version of the [Russian Terms of Use](https://docs.scwa.ru/). If the two differ, the Russian version prevails, except where the law of your country gives you stronger rights.
 
-**Last updated: October 29, 2026**
+**Last updated: November 8, 2026**
 
 ---
 
@@ -38,7 +38,7 @@ You must be at least 14 years old. If local law sets a higher age of digital con
 
 ## 4. Free service and donations
 
-4.1. **The Service is free.** All features are available to everyone with no subscriptions or paid tiers.
+4.1. **The Service is free.** All features are available to everyone with no subscriptions or paid tiers. Optional cosmetic vehicle camouflages for the browser battles are sold separately under the [camouflage offer](https://docs.scwa.ru/skins-offer) (in Russian); they give no gameplay advantage and do not affect access to the Service.
 
 4.2. You may support the project with a voluntary donation. A donation gives no extra features, priority or other benefits. Donations are governed by the [donation offer](https://docs.scwa.ru/offer) (in Russian) and are made in Russian roubles through third-party payment providers.
 

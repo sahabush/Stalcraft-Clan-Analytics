@@ -10,7 +10,7 @@ description: How SCWA handles your data
 > **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a free, fan-made analytics service for STALZONE clans. It is not affiliated with EXBO, STALZONE or Discord.
 > This is the English version for users in the EU/EEA, the UK, the US and elsewhere. The [Russian version](https://docs.scwa.ru/privacy) describes the same practices.
 
-**Last updated: October 29, 2026**
+**Last updated: November 8, 2026**
 
 ---
 
@@ -45,7 +45,7 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 - Settings such as language and bot output style.
 - Support tickets and their attachments.
 
-**Donations** (optional): transaction ID, amount, date, status, and the email address you enter for the receipt. Card details are handled by the payment provider — we never receive them.
+**Donations and camouflage purchases** (optional): transaction ID, amount, date, status, the email address you enter for the receipt, and, for purchases, your account number and the camouflages you bought. Card details are handled by the payment provider — we never receive them.
 
 **Technical data**
 - For each signed-in session: sign-in method, browser and operating system (User-Agent), IP address and last activity time. You can see and end any session in your account under "Active sessions".
@@ -59,7 +59,7 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 | Providing the service: sign-in, clan membership checks, statistics, access rights | Performance of a contract (Art. 6(1)(b)) |
 | Clan analytics based on public game statistics of clan members | Legitimate interests of the clan and its members (Art. 6(1)(f)) |
 | Security: sessions, rate limiting, abuse prevention, admin logs | Legitimate interests (Art. 6(1)(f)) |
-| Donation records and receipts | Legal obligation (Art. 6(1)(c)) |
+| Donation and purchase records and receipts | Legal obligation (Art. 6(1)(c)) |
 | Improving recognition of screenshots (on aggregated data) | Legitimate interests (Art. 6(1)(f)) |
 | Training our recognition models on screenshots you chose to share | Consent (Art. 6(1)(a)), withdrawable at any time |
 
@@ -73,14 +73,14 @@ Clan leaders connect their clan to get analytics, and that includes public game 
 
 We do not sell or rent personal data and do not "share" it for cross-context behavioural advertising (as defined by the CCPA/CPRA). Data is passed only to:
 - the hosting provider, to run the service;
-- the payment provider (YooKassa), only when you make a donation;
+- the payment provider (YooKassa), only when you make a donation or a purchase;
 - authorities, only when legally required.
 
 What you publish yourself (for example a profile set to "everyone") is visible to other users.
 
 ## 7. Where it is stored
 
-Our main servers, where your data is stored and processed, are located in Finland (EU). Screenshot recognition runs there too. Donations are processed in Russia by the payment provider. This transfer outside the EU is necessary to carry out the donation you make (GDPR Art. 49(1)(b)).
+Our main servers, where your data is stored and processed, are located in Finland (EU). Screenshot recognition runs there too. Donations and purchases are processed in Russia by the payment provider. This transfer outside the EU is necessary to carry out the donation or purchase you make (GDPR Art. 49(1)(b)).
 
 ## 8. Your rights
 
@@ -111,7 +111,7 @@ Some of this you can do yourself in your account: end sessions on other devices,
 | Support tickets | As long as needed to resolve the request |
 | Administrator logs | 90 days |
 | Ban records | Up to 3 years |
-| Donation records | 3 years (accounting requirements) |
+| Donation and purchase records | 3 years (accounting requirements) |
 
 ## 10. Security
 
