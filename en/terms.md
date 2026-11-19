@@ -7,10 +7,10 @@ description: Terms of use of the SCWA service
 
 # SCWA Terms of Use
 
-> **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a free, fan-made analytics service for STALZONE clans.
+> **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a fan-made analytics service for STALZONE clans.
 > This is the English version of the [Russian Terms of Use](https://docs.scwa.ru/). If the two differ, the Russian version prevails, except where the law of your country gives you stronger rights.
 
-**Last updated: November 8, 2026**
+**Last updated: November 19, 2026**
 
 ---
 
@@ -36,13 +36,13 @@ You must be at least 14 years old. If local law sets a higher age of digital con
 
 3.3. We may refuse or suspend access for users who break these Terms, and we will tell you why. A ban lasts up to 3 years.
 
-## 4. Free service and donations
+## 4. Free features, purchases and donations
 
-4.1. **The Service is free.** All features are available to everyone with no subscriptions or paid tiers. Optional cosmetic vehicle camouflages for the browser battles are sold separately under the [camouflage offer](https://docs.scwa.ru/skins-offer) (in Russian); they give no gameplay advantage and do not affect access to the Service.
+4.1. **Clan analytics and basic Noos web analysis are free.** Noos Plus provides a higher web analysis limit and API access for 30 days. See the [Noos Plus offer](/noos-offer) (in Russian) and the [plans page](https://scwa.ru/noos/access) for current pricing and limits. Optional camouflages for browser battles are sold under the [camouflage offer](/skins-offer) (in Russian) and change the appearance of vehicles.
 
 4.2. You may support the project with a voluntary donation. A donation gives no extra features, priority or other benefits. Donations are governed by the [donation offer](https://docs.scwa.ru/offer) (in Russian) and are made in Russian roubles through third-party payment providers.
 
-4.3. **Never pay with in-game currency or items.** Accepting in-game valuables would break the STALZONE user agreement; we accept real-money donations only through official payment gateways.
+4.3. Purchases and donations are made in Russian roubles through official payment gateways. Trading for in-game currency or items is prohibited.
 
 ## 5. Your data
 
@@ -54,7 +54,7 @@ We collect only what the Service needs, never sell it and show no ads. Details â
 
 6.1a. You may allow us to keep your uploaded screenshots and the results you confirmed to train the Service's own recognition models (Noos). This is optional, not a condition of using the Service, and can be withdrawn at any time on the upload page â€” your saved copies are then deleted. Kept screenshots are never published or shared; models trained on them belong to the Service.
 
-6.1b. With a linked game character you may send game screenshots on the Noos page and label them yourself (screen type, boxes, categories, text). By sending a screenshot there you agree that it and your labels are used to train the Service's recognition models. We may reject screenshots or labels and limit intake from you; you can delete what you sent at any time, and withdrawing consent (6.1a) deletes these too.
+6.1b. Personal screenshot analysis in Noos is available after signing in to SCWA. Screenshots and results are stored so you can retrieve them on the website or through the API. Sharing a screenshot for training is a separate action on the website and requires a linked game character. Withdrawing consent applies to training copies. See the [Privacy Policy](/en/privacy) for retention and deletion of personal analyses.
 
 6.2. You must not:
 - upload unlawful content;

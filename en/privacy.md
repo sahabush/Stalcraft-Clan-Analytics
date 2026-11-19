@@ -7,10 +7,10 @@ description: How SCWA handles your data
 
 # SCWA Privacy Policy
 
-> **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a free, fan-made analytics service for STALZONE clans. It is not affiliated with EXBO, STALZONE or Discord.
+> **SCWA** (Stalzone Clan Wars Analytics), also called **SCA**, is a fan-made analytics service for STALZONE clans. It is not affiliated with EXBO, STALZONE or Discord.
 > This is the English version for users in the EU/EEA, the UK, the US and elsewhere. The [Russian version](https://docs.scwa.ru/privacy) describes the same practices.
 
-**Last updated: November 8, 2026**
+**Last updated: November 19, 2026**
 
 ---
 
@@ -35,9 +35,10 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 - EXBO sign-in (STALZONE): your game characters, clan name and ID, clan rank, and the clan member list (in-game nicknames). The EXBO access token is stored encrypted.
 
 **Game statistics**
-- From screenshots you upload: in-game nicknames and match results (kills, deaths, assists, score). The images themselves are deleted after processing, within 10 minutes at most — unless you allow us to keep them for training (below).
+- Regular clan-war uploads: in-game nicknames and match results (kills, deaths, assists, score). The original screenshots are deleted after processing, within 10 minutes at most.
 - **Only with your consent:** a copy of the uploaded screenshot (re-encoded, file metadata removed), the table you checked and confirmed, and the raw recognition result for it — to train our own recognition models (Noos). We ask on your first upload; you can give or withdraw consent at any time with the switch on the upload page.
-- **Screenshots you send on the Noos page** (a linked character is required) are kept with your labels (screen type, boxes, categories, text) for training — sending them there is your consent. Only you and the administrators see them; delete any of them on that page, and withdrawing consent on the upload page deletes them all.
+- **Personal Noos analyses:** Personal screenshot analysis in Noos is available after signing in to SCWA. Screenshots and results are stored so you can retrieve them on the website or through the API. Sharing a screenshot for training is a separate action on the website and requires a linked game character. We keep the account ID and technical records for quotas and analysis history.
+- **Noos training submissions:** Sharing a screenshot for training on the Noos page requires a linked game character and a separate action. The screenshot and its labels (screen type, boxes, categories and text) are kept for review and training. Only you and the administrators can access the training copy. You can delete a training copy, and withdrawing consent on the upload page deletes your training copies. Personal analyses are handled separately.
 - From the official STALZONE API: **public profile counters** of members of clans that use the service (for example grenades thrown, kills, deaths, matches played in different modes). This is the same information anyone can see in the game. It is collected during clan wars and once a day otherwise, including for clan members who do not use the service themselves — see section 5.
 
 **What you choose to provide**
@@ -45,7 +46,7 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 - Settings such as language and bot output style.
 - Support tickets and their attachments.
 
-**Donations and camouflage purchases** (optional): transaction ID, amount, date, status, the email address you enter for the receipt, and, for purchases, your account number and the camouflages you bought. Card details are handled by the payment provider — we never receive them.
+**Donations and optional purchases**, including Noos Plus: transaction ID, amount, date, status, receipt email, and purchase details such as account ID, order ID and access expiry. YooKassa handles card details.
 
 **Technical data**
 - For each signed-in session: sign-in method, browser and operating system (User-Agent), IP address and last activity time. You can see and end any session in your account under "Active sessions".
@@ -56,7 +57,7 @@ Contact: [support@scwa.ru](mailto:support@scwa.ru) · ticket system at [scwa.ru/
 
 | Purpose | Legal basis (GDPR / UK GDPR) |
 |:---|:---|
-| Providing the service: sign-in, clan membership checks, statistics, access rights | Performance of a contract (Art. 6(1)(b)) |
+| Providing the service: sign-in, clan membership checks, statistics, personal Noos analysis and purchased access | Performance of a contract (Art. 6(1)(b)) |
 | Clan analytics based on public game statistics of clan members | Legitimate interests of the clan and its members (Art. 6(1)(f)) |
 | Security: sessions, rate limiting, abuse prevention, admin logs | Legitimate interests (Art. 6(1)(f)) |
 | Donation and purchase records and receipts | Legal obligation (Art. 6(1)(c)) |
@@ -101,7 +102,8 @@ Some of this you can do yourself in your account: end sessions on other devices,
 
 | Data | Kept for |
 |:---|:---|
-| Uploaded screenshots | Until processed (10 minutes at most) |
+| Regular clan-war screenshots | Until processed (10 minutes at most) |
+| Personal Noos screenshots and results | Until deleted, with no automated retention deadline. Delete API analyses with the `DELETE` request in the [API documentation](https://scwa.ru/noos/docs). Contact [support](https://scwa.ru/support) about deleting personal web analyses. |
 | Screenshots kept for training (with consent) | Until you withdraw consent — then deleted right away |
 | Match statistics from screenshots | 90 days, then deleted automatically |
 | Public profile statistics (scanner) | While the clan is connected, or until you ask us to delete it |
